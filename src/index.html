@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>开店助手 · 摆摊阶段原型</title>
+<style>
+:root{
+  --bg:#f5f3ee; --panel:#fff; --ink:#24211c; --muted:#7a746a;
+  --line:#e3ded4; --ai:#2f6fed; --field:#c2761a; --good:#2e8b57; --bad:#c0392b; --warn:#e67e22;
+}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.6 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink)}
+header{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:12px 20px;background:#24211c;color:#f5f3ee;position:sticky;top:0}
+header h1{font-size:17px;margin:0;font-weight:700}
+header .stat{font-size:14px;color:#d8d2c6}
+header .stat b{color:#fff}
+.bar{width:130px;height:8px;background:#4a463f;border-radius:4px;overflow:hidden;display:inline-block;vertical-align:middle}
+.bar i{display:block;height:100%;background:var(--ai);width:0;transition:width .2s}
+main{display:grid;grid-template-columns:330px minmax(340px,1fr) 290px;gap:14px;padding:14px 20px;max-width:1300px;margin:0 auto}
+@media(max-width:980px){main{grid-template-columns:1fr}}
+section{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;align-self:start}
+section h2{margin:14px 0 8px;font-size:13px;letter-spacing:.08em;color:var(--muted)}
+section h2:first-child{margin-top:0}
+.card{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.card .big{font-size:26px;font-weight:700;line-height:1.2}
+.tag{display:inline-block;font-size:11px;padding:0 6px;border-radius:4px;border:1px solid;margin-right:4px;vertical-align:1px}
+.tag.lock{color:var(--good);border-color:var(--good)}
+.tag.l0{color:var(--warn);border-color:var(--warn)}
+.tag.bad{color:var(--bad);border-color:var(--bad)}
+.badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:10px;margin-top:6px}
+.badge.warn{background:#fdebd7;color:#a35a00}
+.badge.bad{background:#fadbd8;color:#96271b}
+.tagline{font-size:12px;color:var(--muted)}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:#fff;padding:8px 14px}
+button.primary{background:var(--ai);border-color:var(--ai);color:#fff}
+button.field{background:#fff7ec;border-color:var(--field);color:#8a5410}
+button:disabled{opacity:.45;cursor:not-allowed}
+.gaprow{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.gaprow:last-child{border-bottom:0}
+.gaprow button{padding:3px 10px;font-size:12px}
+.log{list-style:none;margin:10px 0 0;padding:0;max-height:360px;overflow:auto;font-size:13px}
+.log li{padding:5px 8px;border-radius:6px;margin-bottom:4px;background:#f7f5f0}
+.log li.good{background:#e8f6ee}
+.log li.warn{background:#fdf1e2}
+.log li.bad{background:#fdeceb}
+.log li.ai{background:#eaf1fe}
+.daymark{color:var(--muted);font-size:12px;margin-right:6px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left}
+td.num,th.num{text-align:right}
+details{margin-top:10px;font-size:13px;color:var(--muted)}
+details div{margin-top:6px}
+.discipline{font-size:13px;padding:4px 0}
+.discipline .ok{color:var(--good)}
+.discipline .no{color:var(--bad)}
+#overlay{position:fixed;inset:0;background:rgba(20,18,15,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
+#overlay.on{display:flex}
+.modal{background:#fff;border-radius:12px;max-width:580px;width:100%;padding:20px;max-height:86vh;overflow:auto}
+.modal h3{margin:0 0 8px}
+.modal .acts{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+.opt{display:block;width:100%;text-align:left;margin-top:8px;padding:10px 12px}
+.opt:hover{border-color:var(--ai)}
+.vbtn{padding:2px 7px;margin:1px;font-size:12px;border-radius:5px}
+.vbtn.on{background:var(--ai);border-color:var(--ai);color:#fff}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:6px 0 24px}
+footer code{background:#ece7dd;padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>开店助手 · 摆摊</h1>
+  <span class="stat" id="h-day"></span>
+  <span class="stat" id="h-cash"></span>
+  <span class="stat" id="h-bottom"></span>
+  <span class="stat">完整度 <span class="bar"><i id="h-bar"></i></span> <b id="h-fill"></b></span>
+</header>
+<main>
+  <section>
+    <h2>军师面板（AI 参谋）</h2>
+    <div id="adv-cards"></div>
+    <h2>方案卡</h2>
+    <div id="adv-advice"></div>
+    <h2>缺口清单</h2>
+    <div id="adv-gaps"></div>
+  </section>
+  <section>
+    <h2>现场（你的回合）</h2>
+    <div id="act-buttons" style="display:flex;gap:10px;flex-wrap:wrap"></div>
+    <div class="tagline" id="act-hint" style="margin-top:8px"></div>
+    <h2>日志</h2>
+    <ul class="log" id="log"></ul>
+  </section>
+  <section>
+    <h2>账目</h2>
+    <table id="ledger"></table>
+    <details><summary>细算（公式与来源）</summary><div id="calc"></div></details>
+    <h2>三条纪律</h2>
+    <div id="disc"></div>
+  </section>
+</main>
+<footer>基于 <code>docs/index.md</code> 设计的摆摊阶段垂直切片 · 财务常量对齐 <code>examples/shop-launch/src/ledger.py</code></footer>
+<div id="overlay"><div class="modal" id="modal"></div></div>
+
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+
+/* 数值常量：与 ledger.py 的 LOCK 对齐；标 [L0] 的为未验证占位假设 */
+const LOCK = { stallDaily: 150, days: 28, lossCap: 20000, wasteCap: 0.10, startCash: 35000, deviceCost: 15000 };
+const C = { food: 0.35, stall: 80, broth: 7, probe: 150, blind: 300, fine: 200, loan: 8000, loanWeekly: 400 };
+const GAP_DEFS = [
+  { key: 'anchor', label: '定价锚点', method: '探店' },
+  { key: 'turn',   label: '翻台率', method: '探店' },
+  { key: 'mix',    label: '荤签品类比例', method: '探店' },
+  { key: 'broth',  label: '底料盲测冠军款', method: '盲测' },
+  { key: 'daily',  label: '实测日均签数', method: '自动' },
+  { key: 'waste',  label: '实际损耗率', method: '自动' },
+];
+
+let S;
+
+function reset() {
+  S = {
+    day: 1, cash: LOCK.startCash - LOCK.deviceCost,
+    pricing: 'ai', mix: [60, 30, 10], priceCut: false,
+    quality: 1.0, gaps: {}, records: [],
+    wasteSum: 0, wasteN: 0, violations: 0, weekViolations: 0,
+    declines: 0, loans: 0, loanWeekly: 0, wechat: 0,
+    nextMult: 1, finished: false,
+    cum: { rev: 0, cost: 0, act: 0, event: 0 },
+  };
+  GAP_DEFS.forEach((g) => { S.gaps[g.key] = { done: false, val: null }; });
+  $('log').innerHTML = '';
+  log('第 1 天：设备投入 15,000 元开摊。军师给出通用方案——但每个数字的来源你得自己盯。', 'ai');
+  log('风险底线：第一阶段累计亏损 20,000 元即出局。', 'warn');
+}
+
+/* ── 计算（对齐 ledger.py 公式） ── */
+
+function fmt(n) { return Math.round(n).toLocaleString('zh-CN'); }
+function money(n) { return '¥' + fmt(n); }
+function bottom() { return LOCK.startCash - LOCK.lossCap; }
+
+function avgPrice() {
+  const p = S.pricing === 'ai' ? { v: 1.0, m: 2.0, p: 3.0 } : { v: 0.65, m: 1.25, p: 2.5 };
+  const mix = S.mix;
+  let x = (mix[0] * p.v + mix[1] * p.m + mix[2] * p.p) / (mix[0] + mix[1] + mix[2]);
+  if (S.priceCut) x *= 0.85;
+  return x;
+}
+
+function multCore() {
+  let m = 1;
+  if (S.pricing === 'ai') m *= 0.78;
+  if (S.gaps.broth.done) m *= S.quality;
+  if (S.gaps.turn.done) m *= 1.08;
+  return m;
+}
+function projSkews() { return Math.round(150 * multCore()); }
+
+function progress() {
+  const played = S.records.length;
+  const total = S.records.reduce((a, r) => a + r.skews, 0);
+  const remain = LOCK.days - played;
+  const need = remain > 0 ? Math.max(0, (LOCK.stallDaily * LOCK.days - total) / remain) : 0;
+  return { played, remain, total, avg: played ? total / played : 0, need };
+}
+function fillInfo() {
+  const n = GAP_DEFS.filter((g) => S.gaps[g.key].done).length;
+  return { n, ratio: n / GAP_DEFS.length };
+}
+
+/* ── 军师方案卡 ── */
+
+function advice() {
+  if (!S.gaps.anchor.done) return {
+    act: 'probe', gap: 'anchor', score: 40, dep: 'B', lvl: 'L0',
+    title: '回填本地定价锚点',
+    why: '全部营收测算挂在定价上，当前用的是通用模型。',
+    limit: '不知道本地已锚定 5 毛/签，给出的区间可能整体偏高。',
+  };
+  if (!S.gaps.broth.done) return {
+    act: 'blind', gap: 'broth', score: 60, dep: 'A+C', lvl: 'L0',
+    title: '锁定底料冠军款',
+    why: '底料是复购的关键，评分表与盲测流程我来出。',
+    limit: '闻不到、尝不出——每个分必须你来打。',
+  };
+  if (!S.gaps.turn.done) return {
+    act: 'probe', gap: 'turn', score: 50, dep: 'B', lvl: 'L0',
+    title: '回填翻台率',
+    why: '翻台率决定摆摊期的日接待上限。',
+    limit: '算不出拐角人流，需要你在现场数出来。',
+  };
+  if (!S.gaps.mix.done) return {
+    act: 'probe', gap: 'mix', score: 45, dep: 'B', lvl: 'L0',
+    title: '回填荤签品类比例',
+    why: '荤素比例直接决定均价与全部营收测算。',
+    limit: '默认 60:30:10 是占位假设，未验证。',
+  };
+  const p = progress();
+  if (p.remain > 0 && p.need > projSkews()) return {
+    act: 'stall', score: 80, dep: 'A', lvl: 'L1',
+    title: '全力出摊追进度',
+    why: '剩余 ' + p.remain + ' 天需日均 ' + Math.round(p.need) + ' 签，我这边能力上限约 ' + projSkews() + ' 签。',
+    limit: '天气与现场客流属 C 类，我预测不了，现场处置由你兜底。',
+  };
+  return {
+    act: 'stall', score: 80, dep: 'A', lvl: 'L1',
+    title: '按节奏出摊',
+    why: '数据齐备，按当前模型推进即可。',
+    limit: '随机事件属 C 类，预测了也不算数。',
+  };
+}
+function tierOf(score) {
+  return score >= 80 ? '直接采纳' : score >= 60 ? '采纳，落地前人工抽验'
+    : score >= 31 ? '仅作参考输入，判断由人补全' : '人工独占，AI 不参与';
+}
+
+/* ── 日志与弹层 ── */
+
+function log(msg, cls) {
+  const ul = $('log');
+  const li = document.createElement('li');
+  if (cls) li.className = cls;
+  li.innerHTML = '<span class="daymark">D' + S.day + '</span>' + msg;
+  ul.prepend(li);
+  while (ul.children.length > 60) ul.removeChild(ul.lastChild);
+}
+
+function openModal(html, btns) {
+  const m = $('modal');
+  let tail = '';
+  if (btns) {
+    tail = '<div class="acts">' + btns.map((b, i) =>
+      '<button data-i="' + i + '" class="' + (b.cls || '') + '">' + b.label + '</button>').join('') + '</div>';
+  }
+  m.innerHTML = html + tail;
+  if (btns) btns.forEach((b, i) => { m.querySelector('button[data-i="' + i + '"]').onclick = b.fn; });
+  $('overlay').classList.add('on');
+}
+function closeModal() { $('overlay').classList.remove('on'); }
+
+/* ── 回合动作 ── */
+
+function doStall() {
+  const ev = rollEvent();
+  if (!ev) { finishStall(1); return; }
+  if (ev.kind === 'auto') {
+    if (ev.next) S.nextMult *= ev.next;
+    log(ev.label + '：' + ev.text, ev.cls || 'warn');
+    finishStall(ev.mult);
+    return;
+  }
+  openEvent(ev);
+}
+
+function finishStall(mult) {
+  const totalMult = mult * S.nextMult;
+  S.nextMult = 1;
+  const noise = 0.9 + Math.random() * 0.2;
+  const skews = Math.max(0, Math.round(150 * multCore() * totalMult * noise));
+  const rev = skews * avgPrice();
+  const waste = 0.06 + Math.random() * 0.07;
+  S.wasteSum += waste; S.wasteN += 1;
+  let note = '';
+  if (waste > LOCK.wasteCap) { S.violations += 1; S.weekViolations += 1; note = '，超纪律线'; }
+  const cost = rev * C.food * (1 + waste) + C.broth + C.stall;
+  S.cash += rev - cost;
+  S.cum.rev += rev; S.cum.cost += cost;
+  S.wechat += 3;
+  log('出摊 ' + skews + ' 签 → 流水 ' + money(rev) + '，扣成本净 ' + money(rev - cost) +
+      '，损耗 ' + (waste * 100).toFixed(1) + '%' + note,
+      note ? 'warn' : (skews >= 150 ? 'good' : ''));
+  commit({ day: S.day, act: '摊', skews: skews, rev: rev, cost: cost });
+}
+
+function fillProbe(key) {
+  const g = S.gaps[key];
+  if (g.done) return;
+  g.done = true;
+  S.cash -= C.probe; S.cum.act += C.probe;
+  if (key === 'anchor') {
+    S.pricing = 'locked';
+    g.val = '0.5–0.8 / 1–1.5 / 2–3 元';
+    log('探店回填：本地锚点 5 毛/签。军师当场作废 AI 通用定价——数据质量决定 AI 上限。', 'ai');
+  } else if (key === 'turn') {
+    g.val = '日接待上限 +8%';
+    log('探店回填：翻台率拿到手，日接待上限修正 +8%。', 'good');
+  } else if (key === 'mix') {
+    S.mix = [55, 35, 10];
+    g.val = '55 : 35 : 10';
+    log('探店回填：荤签品类比例 55:35:10，占位假设 60:30:10 作废。', 'good');
+  }
+  commit({ day: S.day, act: '探店', skews: 0, rev: 0, cost: C.probe });
+}
+
+function openProbePicker() {
+  const left = GAP_DEFS.filter((g) => g.method === '探店' && !S.gaps[g.key].done);
+  if (!left.length) return;
+  openModal(
+    '<h3>探店回填</h3><p class="tagline">实地行动：当天无营收，花费 ' + money(C.probe) +
+    '。带回来的数据直接改写军师的结论。</p>' +
+    left.map((g) => '<button class="opt" data-k="' + g.key + '"><b>' + g.label +
+      '</b><div class="tagline">证据等级将从 L0 升到 L1</div></button>').join(''),
+    [{ label: '取消', fn: closeModal }]
+  );
+  $('modal').querySelectorAll('button[data-k]').forEach((b) => {
+    b.onclick = () => { closeModal(); fillProbe(b.dataset.k); };
+  });
+}
+
+function openBlind() {
+  const names = ['A', 'B', 'C', 'D', 'E'];
+  const crit = ['闻香味', '耐煮度', '回甘'];
+  const sc = {};
+  names.forEach((n) => { sc[n] = {}; });
+  const body = () =>
+    '<h3>底料盲测</h3><p class="tagline">同锅同量、盲编号打分。评分表是 A 类流程，军师给得了；分是 C 类感官，必须你来打。当天无营收，花费 ' + money(C.blind) + '。</p>' +
+    '<table><tr><th>编号</th>' + crit.map((c) => '<th class="num">' + c + '</th>').join('') + '<th class="num">合计</th></tr>' +
+    names.map((n) => '<tr><td><b>' + n + '</b></td>' +
+      crit.map((c) => '<td class="num">' + [1, 2, 3, 4, 5].map((v) =>
+        '<button class="vbtn" data-n="' + n + '" data-c="' + c + '" data-v="' + v + '">' + v + '</button>').join('') +
+        '</td>').join('') +
+      '<td class="num" id="sum-' + n + '">–</td></tr>').join('') +
+    '</table><p class="tagline" id="blind-msg">五款全部打完才能提交。</p>';
+
+  openModal(body(), [
+    { label: '放弃', fn: closeModal },
+    { label: '提交评分', cls: 'primary', fn: submit },
+  ]);
+
+  $('modal').querySelectorAll('.vbtn').forEach((b) => {
+    b.onclick = () => {
+      const n = b.dataset.n, c = b.dataset.c, v = Number(b.dataset.v);
+      sc[n][c] = v;
+      $('modal').querySelectorAll('.vbtn[data-n="' + n + '"][data-c="' + c + '"]').forEach((x) => {
+        x.classList.toggle('on', Number(x.dataset.v) === v);
+      });
+      const sum = crit.reduce((a, k) => a + (sc[n][k] || 0), 0);
+      const filled = crit.every((k) => sc[n][k]);
+      $('sum-' + n).textContent = filled ? sum + ' / 15' : '–';
+    };
+  });
+
+  function submit() {
+    const missing = names.some((n) => crit.some((c) => !sc[n][c]));
+    if (missing) { $('blind-msg').textContent = '还有款没打完分。'; return; }
+    const totals = names.map((n) => crit.reduce((a, c) => a + sc[n][c], 0));
+    const best = Math.max.apply(null, totals);
+    const champ = names[totals.indexOf(best)];
+    S.quality = 1.05 + (best / 45) * 0.10;
+    const g = S.gaps.broth;
+    g.done = true;
+    g.val = '冠军 ' + champ + ' 款（' + best + '/45）';
+    S.cash -= C.blind; S.cum.act += C.blind;
+    log('盲测完成：冠军 ' + champ + ' 款（' + best + '/45），底料系数 → ' + S.quality.toFixed(2) +
+        '。当日花费 ' + money(C.blind) + '。', 'good');
+    closeModal();
+    commit({ day: S.day, act: '盲测', skews: 0, rev: 0, cost: C.blind });
+  }
+}
+
+/* ── C 类随机事件 ── */
+
+function rollEvent() {
+  if (Math.random() > 0.35) return null;
+  const pool = [
+    { kind: 'auto', mult: 0.6, label: '下雨', text: '小雨，客流只剩六成。' },
+    { kind: 'auto', mult: 0, label: '商圈改造', text: '前方施工改造，今天没人。' },
+    { kind: 'auto', mult: 1, next: 1.05, label: '熟客推荐', text: '熟客带朋友来，加了 5 个微信。', cls: 'good' },
+    {
+      kind: 'choice', label: '设备故障', text: '卡式炉点不着火，串好的签等着下锅。',
+      options: [
+        { label: '找师傅修（军师给的渠道清单）', who: 'A 类 · 能力分 80 · 直接采纳', fn() {
+          S.cash -= 700; S.cum.event += 700; log('维修 700 元，军师的渠道清单一次搞定。', 'ai');
+        } },
+        { label: '自己捣鼓', who: 'C 类 · 现场活，军师够不着 · 人工独占', fn() {
+          if (Math.random() < 0.6) { S.cash -= 300; S.cum.event += 300; log('自己修好了，只花 300 元零件。', 'good'); }
+          else { S.cash -= 800; S.cum.event += 800; log('没修好还搭了零件，最后仍叫了师傅。', 'bad'); }
+        } },
+      ],
+    },
+    {
+      kind: 'choice', label: '恶意差评', text: '有人说「又贵又难吃」，还发了帖。',
+      options: [
+        { label: '诚恳回复并补偿', who: 'C 类 · 人工独占', fn() {
+          S.cash -= 100; S.cum.event += 100; log('回复加一份补偿，帖子没有扩大。', 'good');
+        } },
+        { label: '冷处理', who: 'C 类 · 人工独占', fn() {
+          S.nextMult *= 0.85; log('帖子发酵，明天客流受影响。', 'bad');
+        } },
+      ],
+    },
+    {
+      kind: 'choice', label: '对手降价', text: '隔壁摊把素签降到 3 毛，有人来问你跟不跟。',
+      options: [
+        { label: '守住品质带，不降价参战', who: '纪律一 · 军师强烈支持（能力分 80）', fn() {
+          S.nextMult *= 1.05; log('不跟。军师：守住品质带，让客人看到贵在哪。', 'ai');
+        } },
+        { label: '跟降 15%', who: '违反纪律一 · 军师强烈反对', fn() {
+          S.declines += 1; S.priceCut = true; S.nextMult *= 1.25;
+          log('跟降：签价 -15%，客流短暂回升，品质带失守。', 'bad');
+        } },
+      ],
+    },
+  ];
+  if (S.cash < 8000 && S.loans < 1) {
+    pool.push({
+      kind: 'choice', label: '现金吃紧', text: '现金快见底，有人递来「周转贷」。',
+      options: [
+        { label: '借钱周转 +' + money(C.loan), who: '违反纪律二 · 军师强烈反对 · 每周利息 400', fn() {
+          S.cash += C.loan; S.loans += 1; S.loanWeekly += C.loanWeekly;
+          log('借了 8,000 元。每周结算多一笔 400 元利息。', 'bad');
+        } },
+        { label: '不借，收缩过日子', who: '纪律二 · 军师支持', fn() {
+          log('不借钱。军师：每步用上一步的利润。', 'ai');
+        } },
+      ],
+    });
+  }
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function openEvent(ev) {
+  openModal(
+    '<h3>' + ev.label + '</h3><p>' + ev.text + '</p>' +
+    ev.options.map((o, i) =>
+      '<button class="opt" data-o="' + i + '"><b>' + o.label + '</b><div class="tagline">' + o.who + '</div></button>').join(''),
+    [{ label: '现场处置……', fn: closeModal }]
+  );
+  $('modal').querySelectorAll('button[data-o]').forEach((b) => {
+    b.onclick = () => {
+      ev.options[Number(b.dataset.o)].fn();
+      closeModal();
+      finishStall(1);
+    };
+  });
+}
+
+/* ── 回合推进与结算 ── */
+
+function commit(rec) {
+  S.records.push(rec);
+  if (S.cash <= bottom()) { renderAll(); ending('bust'); return; }
+  if (S.day % 7 === 0) { weekly(S.day >= LOCK.days); return; }
+  S.day += 1;
+  renderAll();
+}
+
+function weekly(isLast) {
+  const days = S.records.slice(-7);
+  const sum = days.reduce((a, r) => a + r.skews, 0);
+  const weekAvg = sum / 7;
+  const auto = [];
+  if (S.day === 7) {
+    if (!S.gaps.daily.done) {
+      S.gaps.daily.done = true; S.gaps.daily.val = Math.round(weekAvg) + ' 签/天';
+      auto.push('实测日均 ' + Math.round(weekAvg) + ' 签/天');
+    }
+    if (S.wasteN > 0 && !S.gaps.waste.done) {
+      const w = (S.wasteSum / S.wasteN) * 100;
+      S.gaps.waste.done = true; S.gaps.waste.val = w.toFixed(1) + '%';
+      auto.push('实际损耗率 ' + w.toFixed(1) + '%');
+    }
+  }
+  const fines = S.weekViolations * C.fine;
+  const interest = S.loanWeekly;
+  if (fines > 0) { S.cash -= fines; S.cum.event += fines; }
+  if (interest > 0) { S.cash -= interest; S.cum.event += interest; }
+  S.weekViolations = 0;
+
+  const p = progress();
+  const fill = fillInfo();
+  const busted = S.cash <= bottom();
+  const comment = busted ? '现金触底，这局到头了。'
+    : weekAvg >= LOCK.stallDaily ? '本周达标。保持这个节奏。'
+    : p.need > projSkews() ? '按当前能力上限，剩余日需 ' + Math.round(p.need) + ' 签追不上——数据还没喂全。'
+    : '本周落后，但把缺口回填后还有机会。';
+
+  openModal(
+    '<h3>第 ' + Math.ceil(S.day / 7) + ' 周结算</h3>' +
+    '<table>' +
+    '<tr><th>本周日均</th><td class="num">' + weekAvg.toFixed(0) + ' 签 / 目标 150</td></tr>' +
+    '<tr><th>累计日均</th><td class="num">' + p.avg.toFixed(0) + ' 签</td></tr>' +
+    '<tr><th>剩余进度</th><td class="num">' + (p.remain > 0 ? '剩 ' + p.remain + ' 天，需日均 ' + Math.round(p.need) + ' 签' : '—') + '</td></tr>' +
+    '<tr><th>现金</th><td class="num">' + money(S.cash) + '</td></tr>' +
+    (fines > 0 ? '<tr><th>损耗违规罚款</th><td class="num">-' + money(fines) + '</td></tr>' : '') +
+    (interest > 0 ? '<tr><th>借款利息</th><td class="num">-' + money(interest) + '</td></tr>' : '') +
+    '<tr><th>完整度</th><td class="num">' + fill.n + ' / ' + GAP_DEFS.length + '</td></tr>' +
+    (auto.length ? '<tr><th>自动回填</th><td class="num">' + auto.join('；') + '</td></tr>' : '') +
+    '</table>' +
+    '<p class="tagline">军师：' + comment + '</p>',
+    [{
+      label: isLast ? '查看结局' : '继续', cls: 'primary', fn() {
+        closeModal();
+        if (busted) { ending('bust'); return; }
+        if (isLast) { finalEnding(); return; }
+        S.day += 1;
+        renderAll();
+      },
+    }]
+  );
+}
+
+function finalEnding() {
+  const p = progress();
+  ending(p.avg >= LOCK.stallDaily ? 'pass' : 'fail');
+}
+
+function ending(kind) {
+  S.finished = true;
+  const p = progress();
+  const fill = fillInfo();
+  let title, body;
+  if (kind === 'bust') {
+    title = '第一阶段失败';
+    body = '累计亏损触到 2 万底线，出局。demo 的原话：不押大钱、不留退路问题是零。';
+  } else if (kind === 'pass') {
+    title = '达标晋级';
+    body = '连续 4 周日均 ' + p.avg.toFixed(0) + ' 签（目标 150），配方与客流验证通过——下一站：社区档口店。';
+  } else {
+    title = '未达标';
+    body = '首月日均 ' + p.avg.toFixed(0) + ' 签，差 ' + (LOCK.stallDaily - p.avg).toFixed(0) +
+      ' 签。demo 里摆摊期最长 3 个月，本原型先考第一个月：复盘缺口，再开一局。';
+  }
+  openModal(
+    '<h3>' + title + '</h3><p>' + body + '</p>' +
+    '<table>' +
+    '<tr><th>总日均</th><td class="num">' + p.avg.toFixed(0) + ' 签</td></tr>' +
+    '<tr><th>情报完整度</th><td class="num">' + fill.n + ' / ' + GAP_DEFS.length + '</td></tr>' +
+    '<tr><th>现金</th><td class="num">' + money(S.cash) + '</td></tr>' +
+    '<tr><th>损耗违规</th><td class="num">' + S.violations + ' 次</td></tr>' +
+    '<tr><th>跟降 / 借款</th><td class="num">' + S.declines + ' 次 / ' + S.loans + ' 次</td></tr>' +
+    '<tr><th>攒下微信</th><td class="num">' + S.wechat + ' 个（3 个月目标 300）</td></tr>' +
+    '</table>',
+    [{ label: '重新开局', cls: 'primary', fn() { closeModal(); reset(); renderAll(); } }]
+  );
+  renderAll();
+}
+
+/* ── 渲染 ── */
+
+function renderAll() {
+  const p = progress();
+  const fill = fillInfo();
+  const wk = Math.ceil(S.day / 7);
+  $('h-day').innerHTML = '第 <b>' + S.day + '</b> 天 · 第 <b>' + wk + '</b> 周';
+  $('h-cash').innerHTML = '现金 <b>' + money(S.cash) + '</b>';
+  $('h-bottom').innerHTML = '风险底线 <b>' + money(bottom()) + '</b>';
+  $('h-bar').style.width = (fill.ratio * 100) + '%';
+  $('h-fill').textContent = fill.n + '/' + GAP_DEFS.length;
+
+  const anchorMissing = !S.gaps.anchor.done;
+  const badge = anchorMissing
+    ? '<span class="badge bad">⚠ 定价未回填，营收结论以 AI 通用模型试算，待补全</span>'
+    : (fill.n < GAP_DEFS.length ? '<span class="badge warn">含 ' + (GAP_DEFS.length - fill.n) + ' 项传闻值，完整度 ' + Math.round(fill.ratio * 100) + '%</span>' : '');
+  const price = avgPrice();
+  const proj = projSkews();
+
+  $('adv-cards').innerHTML =
+    '<div class="card"><div class="tagline">累计日均（达标线 150 签/天）</div>' +
+    '<div class="big">' + p.avg.toFixed(0) + ' <span style="font-size:14px;font-weight:400">签/天</span></div>' +
+    '<div class="tagline">' + (p.remain > 0 ? '剩 ' + p.remain + ' 天，需日均 ' + Math.round(p.need) + ' 签' : '本期已结束') + '</div>' + badge + '</div>' +
+    '<div class="card"><div class="tagline">今日测算</div>' +
+    '<div>' + Math.round(proj * 0.9) + '–' + Math.round(proj * 1.1) + ' 签 <span class="tag lock">锁</span></div>' +
+    '<div>流水 ' + money(proj * 0.9 * price) + '–' + money(proj * 1.1 * price) +
+    (anchorMissing ? ' <span class="tag bad">传闻</span>' : ' <span class="tag lock">锁</span>') + '</div>' +
+    '<div class="tagline">均价 ' + price.toFixed(3) + ' 元/签' + (S.priceCut ? '（跟降 -15%）' : '') + '</div></div>' +
+    '<div class="card"><div class="tagline">现金与底线</div>' +
+    '<div>' + money(S.cash) + ' · 距底线 ' + money(S.cash - bottom()) + '</div>' +
+    '<div class="tagline">本周违规 ' + S.weekViolations + ' 次 · 累计 ' + S.violations + ' 次</div></div>';
+
+  renderAdvice();
+  renderGaps();
+  renderActions();
+  renderLedger();
+  renderCalc();
+  renderDisc();
+}
+
+function renderAdvice() {
+  const el = $('adv-advice');
+  if (S.finished) { el.innerHTML = '<div class="card tagline">本局已结束，可重新开局。</div>'; return; }
+  const a = advice();
+  el.innerHTML =
+    '<div class="card"><div><b>' + a.title + '</b></div>' +
+    '<div class="tagline">能力分 ' + a.score + ' · 输入依赖 ' + a.dep + ' · 证据 ' + a.lvl + ' → ' + tierOf(a.score) + '</div>' +
+    '<div style="margin-top:6px">依据：' + a.why + '</div>' +
+    '<div class="tagline">局限：' + a.limit + '</div>' +
+    '<div style="margin-top:8px;display:flex;gap:8px">' +
+    '<button class="primary" id="adv-take">采纳并执行</button>' +
+    '<button id="adv-skip">仅作参考</button></div></div>';
+  $('adv-take').onclick = runAdvice;
+  $('adv-skip').onclick = () => { log('军师建议仅作参考，按你的判断行动。', 'ai'); };
+}
+
+function runAdvice() {
+  const a = advice();
+  if (a.act === 'stall') doStall();
+  else if (a.act === 'probe') fillProbe(a.gap);
+  else openBlind();
+}
+
+function renderGaps() {
+  const el = $('adv-gaps');
+  el.innerHTML = GAP_DEFS.map((g) => {
+    const st = S.gaps[g.key];
+    let right;
+    if (st.done) right = '<span style="color:var(--good)">' + st.val + '</span>';
+    else if (g.method === '自动') right = '<span class="tagline">待自动回填</span>';
+    else if (S.finished) right = '<span class="tagline">—</span>';
+    else right = '<button class="field" data-gap="' + g.key + '">' + g.method + '</button>';
+    return '<div class="gaprow"><span>' + g.label + '<span class="tagline"> · ' + g.method + '</span></span>' + right + '</div>';
+  }).join('');
+  el.querySelectorAll('button[data-gap]').forEach((b) => {
+    b.onclick = () => {
+      const g = GAP_DEFS.find((x) => x.key === b.dataset.gap);
+      if (g.method === '盲测') openBlind(); else fillProbe(g.key);
+    };
+  });
+}
+
+function renderActions() {
+  const probeLeft = GAP_DEFS.some((g) => g.method === '探店' && !S.gaps[g.key].done);
+  const blindLeft = !S.gaps.broth.done;
+  $('act-buttons').innerHTML =
+    '<button class="primary" id="a-stall"' + (S.finished ? ' disabled' : '') + '>出摊营业</button>' +
+    '<button class="field" id="a-probe"' + (S.finished || !probeLeft ? ' disabled' : '') + '>探店回填</button>' +
+    '<button class="field" id="a-blind"' + (S.finished || !blindLeft ? ' disabled' : '') + '>底料盲测</button>';
+  $('act-hint').textContent = '每天只能做一件事；探店与盲测当天无营收，但把传闻换成实测。';
+  if (!S.finished) {
+    $('a-stall').onclick = doStall;
+    $('a-probe').onclick = openProbePicker;
+    $('a-blind').onclick = openBlind;
+  }
+}
+
+function renderLedger() {
+  const last = S.records[S.records.length - 1];
+  const net = S.cum.rev - S.cum.cost;
+  let rows = '';
+  if (last) {
+    rows +=
+      '<tr><th>D' + last.day + ' ' + last.act + '</th><td class="num">流水 ' + money(last.rev) +
+      ' · 成本 ' + money(last.cost) + '</td></tr>';
+  }
+  rows +=
+    '<tr><th>累计流水</th><td class="num">' + money(S.cum.rev) + '</td></tr>' +
+    '<tr><th>累计经营成本</th><td class="num">' + money(S.cum.cost) + '</td></tr>' +
+    '<tr><th>累计净额</th><td class="num">' + money(net) + '</td></tr>' +
+    '<tr><th>行动支出</th><td class="num">' + money(S.cum.act) + '</td></tr>' +
+    '<tr><th>事件与罚息</th><td class="num">' + money(S.cum.event) + '</td></tr>';
+  $('ledger').innerHTML = rows;
+}
+
+function renderCalc() {
+  const ai = S.pricing === 'ai';
+  const price = avgPrice();
+  const terms = ['基数 150（锁）', ai ? '定价 ×0.78（传闻）' : '定价 ×1.00（锁）'];
+  terms.push(S.gaps.broth.done ? '底料 ×' + S.quality.toFixed(2) + '（盲测实测）' : '底料 未回填');
+  terms.push(S.gaps.turn.done ? '翻台 ×1.08（实测）' : '翻台 未回填');
+  const waste = S.wasteN > 0 ? ((S.wasteSum / S.wasteN) * 100).toFixed(1) + '%' : '未回填';
+  $('calc').innerHTML = [
+    '均价 = ' + S.mix.join(':') + ' × ' + (ai ? 'AI 通用模型 1 / 2 / 3 元（传闻）' : '本地锚点 0.65 / 1.25 / 2.5 元（锁）') +
+      (S.priceCut ? ' × 0.85（跟降）' : '') + ' = ' + price.toFixed(3) + ' 元/签',
+    '日均签数 ≈ ' + terms.join(' × ') + ' = ' + projSkews(),
+    '成本 = 流水 × 35% × (1 + 损耗 ' + waste + ') + 底料 7 + 摊位 80（摊位费为 L0 占位）',
+    '达标 = 28 天累计 ÷ 28 ≥ 150 签/天（锁：连续 4 周日均 150）',
+  ].map((x) => '<div>' + x + '</div>').join('');
+}
+
+function renderDisc() {
+  const waste = S.wasteN > 0 ? ((S.wasteSum / S.wasteN) * 100).toFixed(1) + '%' : '未回填';
+  $('disc').innerHTML =
+    '<div class="discipline">不降价参战 — ' +
+      (S.declines > 0 ? '<span class="no">违反 ' + S.declines + ' 次</span>' : '<span class="ok">遵守</span>') + '</div>' +
+    '<div class="discipline">不借钱升级 — ' +
+      (S.loans > 0 ? '<span class="no">违反 ' + S.loans + ' 次，周息 ' + money(S.loanWeekly) + '</span>' : '<span class="ok">遵守</span>') + '</div>' +
+    '<div class="discipline">损耗 ≤ 10% — 本周违规 ' + S.weekViolations + ' 次 · 累计均值 ' + waste + '</div>';
+}
+
+reset();
+renderAll();
+</script>
+</body>
+</html>
