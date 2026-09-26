@@ -9,10 +9,15 @@
 # 与 qtfounder 的差异：本站是单文件纯静态页（src/index.html），无 npm 构建步骤；
 # 当前没有哈希资源目录，入口固定 no-cache 即可。后续新增 assets/ 时再补长缓存步骤。
 #
-# 前置条件（均在 CI 之外完成）：
-#   - OSS 桶 qtgame-tycoon-site 已创建并开启静态网站托管（默认首页 index.html）
-#   - CDN 域名 tycoon.game.quanttide.com 接入并回源该桶；
-#     注意证书需覆盖二级域名（*.quanttide.com 泛证书不覆盖 tycoon.game.quanttide.com）
+# 前置条件（均已在 CI 之外用 aliyun CLI 配置完成，模式见 quanttide-platform 的
+# static-site / cdn-auth 模块）：
+#   - OSS 桶 qtgame-tycoon-site：私有 + 静态网站托管（默认首页 index.html，错误页 404.html）
+#   - CDN 域名 tycoon.game.quanttide.com：源站回该桶（oss:80），l2_oss_key 私有回源
+#     （private_oss_auth=on，角色 AliyunCDNAccessingPrivateOSSRole），另配 https_force
+#     与 back_to_origin_url_rewrite（/ 及未知路径 → /index.html）
+#   - 证书 *.game.quanttide.com（Let's Encrypt，本机 acme.sh 签发；
+#     ~/.acme.sh/deploy-cdn-cert-tycoon.sh 作为 reloadcmd 在续期时自动重新绑定）
+#   - DNS：quanttide.com 下 tycoon.game CNAME → *.w.kunlunaq.com
 #
 # 所需 GitHub secrets：
 #   - ALIYUN_ACCESS_KEY_ID / ALIYUN_ACCESS_KEY_SECRET（secret）：RAM 用户 AccessKey（OSS 上传 + CDN 刷新）
