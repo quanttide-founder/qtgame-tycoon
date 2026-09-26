@@ -1,9 +1,8 @@
-# 发布站点：推送 site/* 或 v* tag（如 site/v0.1.0，由 qtcloud-devops release publish 创建）
-# 或手动触发 workflow 时，把 src/ 静态文件上传到 OSS 发布桶（qtgame-tycoon-site，
-# 静态网站托管），并刷新 CDN 缓存。
+# 发布站点：向 main 分支提交时，把 src/ 静态文件上传到 OSS 发布桶
+#（qtgame-tycoon-site，静态网站托管），并刷新 CDN 缓存。不接受手动触发。
 #
-# 对齐 qtfounder 的 deploy-site.yml 模式：
-#   tag → Actions（ossutil cp）→ OSS 桶（qtgame-tycoon-site）
+# 部署链路（对齐 qtfounder 的 deploy-site.yml 模式）：
+#   main 提交 → Actions（ossutil cp）→ OSS 桶（qtgame-tycoon-site）
 #   → CDN（tycoon.game.quanttide.com）→ 用户浏览器
 #
 # 与 qtfounder 的差异：本站是单文件纯静态页（src/index.html），无 npm 构建步骤；
@@ -26,10 +25,8 @@ name: Deploy Site
 
 on:
   push:
-    tags:
-      - 'site/**'
-      - 'v*'
-  workflow_dispatch:
+    branches:
+      - main
 
 concurrency:
   group: deploy-qtgame-tycoon-site
