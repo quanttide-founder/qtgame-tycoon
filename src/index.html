@@ -3,418 +3,440 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>开店助手 · 摆摊阶段原型</title>
+<title>开店助手 · 摆摊经营</title>
 <style>
 :root{
-  --bg:#f5f3ee; --panel:#fff; --ink:#24211c; --muted:#7a746a;
-  --line:#e3ded4; --ai:#2f6fed; --field:#c2761a; --good:#2e8b57; --bad:#c0392b; --warn:#e67e22;
+  --bg:#16120d; --panel:#221b14; --card:#26201a; --line:#3a3025;
+  --ink:#f3ead9; --muted:#a4917a; --lamp:#f2b441;
+  --good:#4caf7d; --warn:#e6a23c; --bad:#e06a5b;
 }
 *{box-sizing:border-box}
-body{margin:0;font:15px/1.6 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink)}
-header{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:12px 20px;background:#24211c;color:#f5f3ee;position:sticky;top:0}
-header h1{font-size:17px;margin:0;font-weight:700}
-header .stat{font-size:14px;color:#d8d2c6}
-header .stat b{color:#fff}
-.bar{width:130px;height:8px;background:#4a463f;border-radius:4px;overflow:hidden;display:inline-block;vertical-align:middle}
-.bar i{display:block;height:100%;background:var(--ai);width:0;transition:width .2s}
-main{display:grid;grid-template-columns:330px minmax(340px,1fr) 290px;gap:14px;padding:14px 20px;max-width:1300px;margin:0 auto}
-@media(max-width:980px){main{grid-template-columns:1fr}}
-section{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;align-self:start}
-section h2{margin:14px 0 8px;font-size:13px;letter-spacing:.08em;color:var(--muted)}
-section h2:first-child{margin-top:0}
-.card{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:10px}
-.card .big{font-size:26px;font-weight:700;line-height:1.2}
-.tag{display:inline-block;font-size:11px;padding:0 6px;border-radius:4px;border:1px solid;margin-right:4px;vertical-align:1px}
-.tag.lock{color:var(--good);border-color:var(--good)}
-.tag.l0{color:var(--warn);border-color:var(--warn)}
-.tag.bad{color:var(--bad);border-color:var(--bad)}
-.badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:10px;margin-top:6px}
-.badge.warn{background:#fdebd7;color:#a35a00}
-.badge.bad{background:#fadbd8;color:#96271b}
-.tagline{font-size:12px;color:var(--muted)}
-button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:#fff;padding:8px 14px}
-button.primary{background:var(--ai);border-color:var(--ai);color:#fff}
-button.field{background:#fff7ec;border-color:var(--field);color:#8a5410}
-button:disabled{opacity:.45;cursor:not-allowed}
-.gaprow{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13px}
-.gaprow:last-child{border-bottom:0}
-.gaprow button{padding:3px 10px;font-size:12px}
-.log{list-style:none;margin:10px 0 0;padding:0;max-height:360px;overflow:auto;font-size:13px}
-.log li{padding:5px 8px;border-radius:6px;margin-bottom:4px;background:#f7f5f0}
-.log li.good{background:#e8f6ee}
-.log li.warn{background:#fdf1e2}
-.log li.bad{background:#fdeceb}
-.log li.ai{background:#eaf1fe}
-.daymark{color:var(--muted);font-size:12px;margin-right:6px}
-table{width:100%;border-collapse:collapse;font-size:13px}
-td,th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left}
-td.num,th.num{text-align:right}
-details{margin-top:10px;font-size:13px;color:var(--muted)}
-details div{margin-top:6px}
-.discipline{font-size:13px;padding:4px 0}
-.discipline .ok{color:var(--good)}
-.discipline .no{color:var(--bad)}
-#overlay{position:fixed;inset:0;background:rgba(20,18,15,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
+body{margin:0;font:14px/1.55 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink)}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:#2c241b;color:var(--ink);padding:9px 14px}
+button.primary{background:linear-gradient(#f2b441,#e09b2d);border-color:#f2b441;color:#2a1d08;font-weight:700}
+button.ghost{background:transparent}
+button:disabled{opacity:.32;cursor:not-allowed}
+b{font-weight:700}
+.mut{color:var(--muted)}
+.ok{color:var(--good)}
+.tag{font-size:12px;color:var(--muted)}
+.wrap{max-width:560px;margin:0 auto;padding:14px 14px 84px}
+.page{display:none}
+.page.on{display:block}
+h2{margin:0 0 12px;font-size:17px}
+h3{margin:16px 0 8px;font-size:13px;letter-spacing:.08em;color:var(--muted);font-weight:600}
+
+/* ── 开场页 ── */
+#pg-open{max-width:420px;margin:0 auto;text-align:center;padding-top:8vh}
+#pg-open .silhouette{height:150px;position:relative;margin-bottom:6px}
+#pg-open h1{font-size:22px;margin:0 0 4px;letter-spacing:.06em}
+#pg-open .place{color:var(--lamp);font-size:13px;letter-spacing:.2em;margin-bottom:22px}
+#pg-open p{font-size:15px;line-height:2;margin:0 0 4px}
+#pg-open .risk{font-size:12px;color:var(--muted);margin-top:14px}
+#pg-open .primary{margin-top:26px;padding:14px 46px;font-size:17px}
+
+/* ── 主场景页 ── */
+header{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:var(--muted)}
+header b{color:var(--ink);font-size:15px}
+.prog{display:flex;align-items:center;gap:8px;margin:8px 0 12px;font-size:13px;color:var(--muted)}
+.prog .track{flex:1;height:8px;background:#2c241b;border-radius:4px;overflow:hidden}
+.prog .fill{height:100%;width:0;background:var(--bad);transition:width .3s}
+.prog .fill.mid{background:var(--warn)}
+.prog .fill.on{background:var(--good)}
+
+.scene{position:relative;height:32vh;min-height:210px;border-radius:14px;overflow:hidden;
+  background:linear-gradient(#141b2c 0%,#2a2135 48%,#3b2d22 100%)}
+.lights{position:absolute;top:0;left:0;right:0;height:22px;
+  background:radial-gradient(circle at 16px 10px,#ffcf7a 0 3px,rgba(255,207,122,.22) 4px,transparent 7px);
+  background-size:32px 22px}
+.ground{position:absolute;left:0;right:0;bottom:0;height:34px;background:#2b2119}
+.table{position:absolute;bottom:30px;left:10%;right:10%;height:56px;background:linear-gradient(#7a5433,#5e3f26);border-radius:6px}
+.pot{position:absolute;bottom:86px;left:20%;width:74px;height:40px;background:#332d29;border-radius:6px 6px 18px 18px;border-top:5px solid #4a443f}
+.steam{position:absolute;bottom:128px;left:22%;width:60px;height:34px}
+.steam i{position:absolute;bottom:0;width:6px;height:16px;background:rgba(255,255,255,.32);border-radius:4px;animation:steam 2.4s ease-in-out infinite}
+.steam i:nth-child(1){left:6px}
+.steam i:nth-child(2){left:26px;animation-delay:.8s}
+.steam i:nth-child(3){left:46px;animation-delay:1.6s}
+@keyframes steam{0%{opacity:0;transform:translateY(0)}30%{opacity:.9}100%{opacity:0;transform:translateY(-22px)}}
+.skewers{position:absolute;bottom:88px;right:24%;width:46px;height:44px;transform:rotate(-7deg);
+  background:repeating-linear-gradient(96deg,#d8b083 0 2px,transparent 2px 7px)}
+.skewers::after{content:"";position:absolute;top:0;left:0;right:6px;height:26px;
+  background:repeating-linear-gradient(96deg,#a8412f 0 6px,transparent 6px 13px)}
+.guests{position:absolute;bottom:34px;left:14px;display:flex;gap:7px;align-items:flex-end}
+.guest{position:relative;width:13px;height:15px;background:#b98d5c;border-radius:6px 6px 3px 3px}
+.guest::before{content:"";position:absolute;top:-9px;left:1px;width:11px;height:11px;border-radius:50%;background:#e3bd93}
+.guest.b{background:#7d8fa5}
+.rival{position:absolute;bottom:34px;right:8px;width:78px;height:58px;background:#221a13;border-radius:6px;display:none;border-top:5px solid #4a3b28}
+.rival::after{content:"隔壁摊";position:absolute;top:12px;left:0;right:0;text-align:center;font-size:10px;color:#8a7a63}
+.rain{position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(78deg,transparent 0 9px,rgba(190,215,255,.28) 9px 10px);
+  animation:rainmove .45s linear infinite}
+.rain.heavy{background-image:repeating-linear-gradient(78deg,transparent 0 5px,rgba(190,215,255,.42) 5px 6px)}
+@keyframes rainmove{to{background-position:0 46px}}
+.sky-tag{position:absolute;top:8px;left:10px;font-size:11px;color:#ecdcbc;background:rgba(0,0,0,.4);padding:2px 9px;border-radius:9px}
+.float{position:absolute;left:50%;top:32%;transform:translateX(-50%);font-size:32px;font-weight:800;
+  color:#ffcf7a;text-shadow:0 2px 10px rgba(0,0,0,.65);opacity:0;pointer-events:none;white-space:nowrap}
+.float.go{animation:floatUp 1.45s ease-out}
+@keyframes floatUp{0%{opacity:0;transform:translate(-50%,16px)}22%{opacity:1}100%{opacity:0;transform:translate(-50%,-50px)}}
+.scene .note{position:absolute;left:0;right:0;bottom:0;background:rgba(12,9,6,.74);font-size:12px;
+  color:#efe3cd;padding:7px 11px;border-radius:0 0 14px 14px}
+
+.advisor{display:flex;gap:9px;margin:12px 0 14px;align-items:flex-start}
+.advisor .who{flex:none;width:34px;height:34px;border-radius:50%;background:#3a2f22;color:var(--lamp);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.advisor p{margin:0;background:#2a221a;border:1px solid #463a2b;border-radius:4px 12px 12px 12px;
+  padding:9px 11px;font-size:13px;line-height:1.6}
+
+.actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.card{display:flex;flex-direction:column;gap:7px;align-items:flex-start;padding:12px 10px;min-height:96px;
+  background:var(--card);border-radius:12px;text-align:left}
+.card b{font-size:15px}
+.card small{font-size:11px;color:var(--muted);white-space:pre-line;line-height:1.5}
+.card.primary{background:linear-gradient(#f2b441,#e09b2d);border-color:#f2b441;color:#2a1d08}
+.card.primary small{color:#5a4314}
+.hint{font-size:12px;color:var(--muted);margin-top:10px}
+
+.tabs{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(560px,100%);
+  display:flex;gap:8px;padding:9px 12px;background:#1a140e;border-top:1px solid var(--line);z-index:7}
+.tabs button{flex:1;font-size:14px}
+
+.sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,115%);width:min(560px,100%);
+  background:#1e1811;border:1px solid var(--line);border-bottom:0;border-radius:16px 16px 0 0;
+  padding:16px;max-height:64vh;overflow:auto;transition:transform .25s;z-index:9}
+.sheet.on{transform:translate(-50%,0)}
+.sheet h3{margin:0 0 10px;display:flex;justify-content:space-between;align-items:center}
+.sheet h3 button{padding:3px 10px;font-size:12px}
+.srow{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.srow:last-child{border-bottom:0}
+.srow.total{border-top:1px solid var(--line);border-bottom:0;font-weight:700;font-size:15px;padding-top:10px}
+.srow small{display:block;color:var(--muted);font-size:11px}
+.srow .mini{padding:4px 12px;font-size:12px}
+.grow{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.grow:last-child{border-bottom:0}
+.logs{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+.logs .log{font-size:12px;padding:5px 8px;border-radius:6px;background:#282019;margin-bottom:5px}
+.logs .log span{color:var(--muted);margin-right:7px;font-size:11px}
+.logs .log.good{background:#1f2b23}
+.logs .log.warn{background:#2e2517}
+.logs .log.bad{background:#2e1c19}
+
+/* ── 周结算页 ── */
+.wk{max-width:420px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+.srow .num{font-variant-numeric:tabular-nums;font-weight:600}
+.wk-track{height:14px;background:#2c241b;border-radius:7px;overflow:hidden;margin:14px 0 6px}
+.wk-fill{height:100%;background:var(--bad);width:0;transition:width .4s}
+.wk-fill.mid{background:var(--warn)}
+.wk-fill.on{background:var(--good)}
+.wk-cap{font-size:12px;color:var(--muted);text-align:right}
+.acts{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.acts button{padding:11px 22px}
+
+/* ── 结局页 ── */
+.end{max-width:420px;margin:0 auto;text-align:center;padding-top:7vh}
+.end h1{font-size:30px;margin:0 0 16px;letter-spacing:.06em}
+.end h1.good{color:var(--good)}
+.end h1.warn{color:var(--warn)}
+.end h1.bad{color:var(--bad)}
+.end .line{font-size:15px;margin:5px 0}
+.end .quote{margin:26px 0 8px;font-size:15px;line-height:1.9;color:var(--lamp)}
+.end .acts{justify-content:center}
+
+/* ── 复盘页 ── */
+.rc-head{font-size:16px;color:var(--lamp);margin:4px 0 14px;font-variant-numeric:tabular-nums}
+.rc-row{display:flex;align-items:center;gap:10px;font-size:12px;margin:7px 0;color:var(--muted)}
+.rc-row .w{width:44px}
+.rc-track{flex:1;height:11px;background:#2c241b;border-radius:6px;overflow:hidden}
+.rc-fill{height:100%;background:var(--warn)}
+.rc-fill.hi{background:var(--bad)}
+.rc-fill.lo{background:var(--good)}
+.rc-row .v{width:48px;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+#rc-marks{list-style:none;margin:0;padding:0}
+#rc-marks li{font-size:13px;padding:7px 10px;background:var(--card);border-radius:8px;margin-bottom:6px}
+.rc-quote{margin-top:18px;font-size:14px;color:var(--lamp);line-height:1.8}
+
+/* ── 弹层 ── */
+#overlay{position:fixed;inset:0;background:rgba(10,8,5,.66);display:none;align-items:center;justify-content:center;padding:18px;z-index:20}
 #overlay.on{display:flex}
-.modal{background:#fff;border-radius:12px;max-width:580px;width:100%;padding:20px;max-height:86vh;overflow:auto}
-.modal h3{margin:0 0 8px}
-.modal .acts{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
-.opt{display:block;width:100%;text-align:left;margin-top:8px;padding:10px 12px}
-.opt:hover{border-color:var(--ai)}
-.vbtn{padding:2px 7px;margin:1px;font-size:12px;border-radius:5px}
-.vbtn.on{background:var(--ai);border-color:var(--ai);color:#fff}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:6px 0 24px}
-footer code{background:#ece7dd;padding:1px 5px;border-radius:4px}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:14px;max-width:480px;width:100%;
+  padding:18px;max-height:86vh;overflow:auto}
+.modal h3{margin:0 0 6px;font-size:16px;color:var(--ink);letter-spacing:0}
+.modal p{margin:6px 0;font-size:14px}
+.modal .acts{margin-top:16px}
+.opt{display:block;width:100%;text-align:left;margin-top:9px;padding:11px 13px;background:var(--card)}
+.opt:hover{border-color:var(--lamp)}
+.opt b{display:block;margin-bottom:3px;font-size:14px}
+.opt span{font-size:12px;color:var(--muted)}
+.modal table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.modal th,.modal td{padding:4px 2px;text-align:center;border-bottom:1px solid var(--line)}
+.vbtn{padding:3px 7px;margin:1px;font-size:12px;border-radius:6px;background:#2c241b}
+.vbtn.on{background:var(--lamp);border-color:var(--lamp);color:#2a1d08;font-weight:700}
 </style>
 </head>
 <body>
-<header>
-  <h1>开店助手 · 摆摊</h1>
-  <span class="stat" id="h-day"></span>
-  <span class="stat" id="h-cash"></span>
-  <span class="stat" id="h-bottom"></span>
-  <span class="stat">完整度 <span class="bar"><i id="h-bar"></i></span> <b id="h-fill"></b></span>
-</header>
-<main>
-  <section>
-    <h2>军师面板（AI 参谋）</h2>
-    <div id="adv-cards"></div>
-    <h2>方案卡</h2>
-    <div id="adv-advice"></div>
-    <h2>缺口清单</h2>
-    <div id="adv-gaps"></div>
+<div class="wrap">
+
+  <!-- 开场页 -->
+  <section class="page" id="pg-open">
+    <div class="silhouette">
+      <div class="pot" style="bottom:76px;left:34%"></div>
+      <div class="steam" style="bottom:120px;left:36%"><i></i><i></i><i></i></div>
+      <div class="skewers" style="bottom:78px;right:30%"></div>
+      <div class="table" style="bottom:20px;left:14%;right:14%"></div>
+    </div>
+    <h1>滁州夜市 · 串串摊</h1>
+    <div class="place">开 张</div>
+    <p>你揣着 2 万块，想在夜市摆个串串摊。</p>
+    <p>28 天，日均 150 签，做到就站稳了。</p>
+    <p>一个 AI 军师说要帮你。</p>
+    <div class="risk">现金见底就收摊。开局明示，没有退路。</div>
+    <button class="primary" id="b-start">出摊</button>
   </section>
-  <section>
-    <h2>现场（你的回合）</h2>
-    <div id="act-buttons" style="display:flex;gap:10px;flex-wrap:wrap"></div>
-    <div class="tagline" id="act-hint" style="margin-top:8px"></div>
-    <h2>日志</h2>
-    <ul class="log" id="log"></ul>
+
+  <!-- 主场景页 -->
+  <section class="page" id="pg-main">
+    <header>
+      <span id="h-day"></span>
+      <span id="h-cash"></span>
+    </header>
+    <div class="prog">
+      <span id="h-avg"></span>
+      <span class="track"><span class="fill" id="h-fill"></span></span>
+    </div>
+
+    <div class="scene" id="scene">
+      <div class="lights"></div>
+      <div class="sky-tag" id="sc-weather"></div>
+      <div class="ground"></div>
+      <div class="table"></div>
+      <div class="pot"></div>
+      <div class="steam"><i></i><i></i><i></i></div>
+      <div class="skewers"></div>
+      <div class="guests" id="sc-guests"></div>
+      <div class="rival" id="sc-rival"></div>
+      <div class="rain" id="sc-rain" style="display:none"></div>
+      <div class="float" id="float"></div>
+      <div class="note" id="sc-note"></div>
+    </div>
+
+    <div class="advisor">
+      <div class="who">军师</div>
+      <p id="adv-line"></p>
+    </div>
+
+    <div class="actions">
+      <button class="card primary" id="b-stall"><b>出摊营业</b><small id="c-stall-sub"></small></button>
+      <button class="card" id="b-probe"><b>探店调研</b><small id="c-probe-sub"></small></button>
+      <button class="card" id="b-blind"><b>底料盲测</b><small id="c-blind-sub"></small></button>
+    </div>
+    <div class="hint" id="hint"></div>
+
+    <div class="tabs">
+      <button id="tab-ledger">账本</button>
+      <button id="tab-gaps">缺口</button>
+    </div>
+
+    <div class="sheet" id="sh-ledger">
+      <h3>账本 <button data-close="sh-ledger">收起</button></h3>
+      <div id="ld-body"></div>
+    </div>
+    <div class="sheet" id="sh-gaps">
+      <h3>缺口 <button data-close="sh-gaps">收起</button></h3>
+      <div id="gp-body"></div>
+    </div>
   </section>
-  <section>
-    <h2>账目</h2>
-    <table id="ledger"></table>
-    <details><summary>细算（公式与来源）</summary><div id="calc"></div></details>
-    <h2>三条纪律</h2>
-    <div id="disc"></div>
+
+  <!-- 周结算页 -->
+  <section class="page" id="pg-weekly">
+    <div class="wk">
+      <h2 id="wk-title"></h2>
+      <div id="wk-rows"></div>
+      <div class="wk-track"><div class="wk-fill" id="wk-fill"></div></div>
+      <div class="wk-cap" id="wk-cap"></div>
+      <p class="tag" id="wk-comment" style="margin-top:14px;line-height:1.8"></p>
+      <div class="acts"><button class="primary" id="b-wk">继续</button></div>
+    </div>
   </section>
-</main>
-<footer>基于 <code>docs/index.md</code> 设计的摆摊阶段垂直切片 · 财务常量对齐 <code>examples/shop-launch/src/ledger.py</code></footer>
+
+  <!-- 结局页 -->
+  <section class="page" id="pg-ending">
+    <div class="end">
+      <h1 id="end-title"></h1>
+      <p class="line" id="end-a"></p>
+      <p class="line" id="end-b"></p>
+      <p class="quote" id="end-quote"></p>
+      <div class="acts">
+        <button class="ghost" id="b-recap">看复盘</button>
+        <button class="primary" id="b-again1">再来一局</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 复盘页 -->
+  <section class="page" id="pg-recap">
+    <div class="end" style="text-align:left;padding-top:24px">
+      <h2>这 28 天</h2>
+      <p class="tag">军师的预测误差</p>
+      <p class="rc-head" id="rc-head"></p>
+      <div id="rc-chart"></div>
+      <h3>关键转折</h3>
+      <ul id="rc-marks"></ul>
+      <p class="rc-quote">游戏里蹲两晚就能回填缺口——滁州的夜市也是。</p>
+      <div class="acts"><button class="primary" id="b-again2">再来一局</button></div>
+    </div>
+  </section>
+
+</div>
+
 <div id="overlay"><div class="modal" id="modal"></div></div>
 
 <script>
 'use strict';
 const $ = (id) => document.getElementById(id);
 
-/* 数值常量：与 ledger.py 的 LOCK 对齐；标 [L0] 的为未验证占位假设 */
-const LOCK = { stallDaily: 150, days: 28, lossCap: 20000, wasteCap: 0.10, startCash: 35000, deviceCost: 15000 };
-const C = { food: 0.35, stall: 80, broth: 7, probe: 150, blind: 300, fine: 200, loan: 8000, loanWeekly: 400 };
-const GAP_DEFS = [
-  { key: 'anchor', label: '定价锚点', method: '探店' },
-  { key: 'turn',   label: '翻台率', method: '探店' },
-  { key: 'mix',    label: '荤签品类比例', method: '探店' },
-  { key: 'broth',  label: '底料盲测冠军款', method: '盲测' },
-  { key: 'daily',  label: '实测日均签数', method: '自动' },
-  { key: 'waste',  label: '实际损耗率', method: '自动' },
+/* ── 常量 ── */
+const L = {
+  days: 28, target: 150, start: 20000, bottom: 0, wasteCap: 0.10,
+  probe: 150, blind: 80, stall: 80, broth: 7, food: 0.35,
+  fine: 200, loan: 8000, loanInt: 400,
+};
+const GAPS = [
+  { key: 'price',   label: '本地价格带', src: '探店', how: '看隔壁摊都卖多少钱' },
+  { key: 'crowd',   label: '真实客流',   src: '探店', how: '数一晚过路的人和翻台' },
+  { key: 'mix',     label: '品类偏好',   src: '探店', how: '看客人点荤多还是点素多' },
+  { key: 'broth',   label: '底料冠军',   src: '盲测', how: '五款盲打分，选出冠军' },
+  { key: 'weekAvg', label: '实测日均',   src: '自动', how: '第一周结算回填' },
+  { key: 'waste',   label: '实际损耗',   src: '自动', how: '第一周结算回填' },
 ];
 
 let S;
+const g = (k) => S.gaps[k];
 
 function reset() {
   S = {
-    day: 1, cash: LOCK.startCash - LOCK.deviceCost,
-    pricing: 'ai', mix: [60, 30, 10], priceCut: false,
-    quality: 1.0, gaps: {}, records: [],
+    day: 1, cash: L.start, weather: rollWeather(),
+    pricing: 'est', mix: [60, 30, 10], priceCut: false, quality: 1,
+    gaps: {}, records: [], logs: [], milestones: [],
     wasteSum: 0, wasteN: 0, violations: 0, weekViolations: 0,
-    declines: 0, loans: 0, loanWeekly: 0, wechat: 0,
-    nextMult: 1, finished: false,
+    wechat: 0, declines: 0, loans: 0, q: [], guests: 3,
     cum: { rev: 0, cost: 0, act: 0, event: 0 },
+    fc: [{ v: L.target, u: 0 }, null, null, null], errors: [null, null, null, null],
+    paidWeeks: {}, rivalDone: false, busy: false, finished: false,
+    lastResult: null,
   };
-  GAP_DEFS.forEach((g) => { S.gaps[g.key] = { done: false, val: null }; });
-  $('log').innerHTML = '';
-  log('第 1 天：设备投入 15,000 元开摊。军师给出通用方案——但每个数字的来源你得自己盯。', 'ai');
-  log('风险底线：第一阶段累计亏损 20,000 元即出局。', 'warn');
+  GAPS.forEach((x) => { S.gaps[x.key] = { filled: false, val: null, day: null }; });
+  log('第 1 天：设备与货置办妥了，手里现金 20,000。', '');
 }
 
-/* ── 计算（对齐 ledger.py 公式） ── */
+/* ── 基础计算 ── */
+const fmt = (n) => Math.round(n).toLocaleString('zh-CN');
+const money = (n) => '¥' + fmt(n);
 
-function fmt(n) { return Math.round(n).toLocaleString('zh-CN'); }
-function money(n) { return '¥' + fmt(n); }
-function bottom() { return LOCK.startCash - LOCK.lossCap; }
+function multCore() {
+  let m = g('price').filled ? 1.05 : 0.78;
+  if (g('crowd').filled) m *= 1.15;
+  if (g('broth').filled) m *= S.quality;
+  return m;
+}
+const projSkews = () => Math.round(L.target * multCore());
 
 function avgPrice() {
-  const p = S.pricing === 'ai' ? { v: 1.0, m: 2.0, p: 3.0 } : { v: 0.65, m: 1.25, p: 2.5 };
+  const p = S.pricing === 'locked' ? { v: 0.65, m: 1.25, p: 2.5 } : { v: 1, m: 2, p: 3 };
   const mix = S.mix;
   let x = (mix[0] * p.v + mix[1] * p.m + mix[2] * p.p) / (mix[0] + mix[1] + mix[2]);
   if (S.priceCut) x *= 0.85;
   return x;
 }
-
-function multCore() {
-  let m = 1;
-  if (S.pricing === 'ai') m *= 0.78;
-  if (S.gaps.broth.done) m *= S.quality;
-  if (S.gaps.turn.done) m *= 1.08;
-  return m;
-}
-function projSkews() { return Math.round(150 * multCore()); }
-
 function progress() {
   const played = S.records.length;
   const total = S.records.reduce((a, r) => a + r.skews, 0);
-  const remain = LOCK.days - played;
-  const need = remain > 0 ? Math.max(0, (LOCK.stallDaily * LOCK.days - total) / remain) : 0;
-  return { played, remain, total, avg: played ? total / played : 0, need };
+  return { played, total, avg: played ? total / played : 0 };
 }
-function fillInfo() {
-  const n = GAP_DEFS.filter((g) => S.gaps[g.key].done).length;
-  return { n, ratio: n / GAP_DEFS.length };
-}
-
-/* ── 军师方案卡 ── */
-
-function advice() {
-  if (!S.gaps.anchor.done) return {
-    act: 'probe', gap: 'anchor', score: 40, dep: 'B', lvl: 'L0',
-    title: '回填本地定价锚点',
-    why: '全部营收测算挂在定价上，当前用的是通用模型。',
-    limit: '不知道本地已锚定 5 毛/签，给出的区间可能整体偏高。',
-  };
-  if (!S.gaps.broth.done) return {
-    act: 'blind', gap: 'broth', score: 60, dep: 'A+C', lvl: 'L0',
-    title: '锁定底料冠军款',
-    why: '底料是复购的关键，评分表与盲测流程我来出。',
-    limit: '闻不到、尝不出——每个分必须你来打。',
-  };
-  if (!S.gaps.turn.done) return {
-    act: 'probe', gap: 'turn', score: 50, dep: 'B', lvl: 'L0',
-    title: '回填翻台率',
-    why: '翻台率决定摆摊期的日接待上限。',
-    limit: '算不出拐角人流，需要你在现场数出来。',
-  };
-  if (!S.gaps.mix.done) return {
-    act: 'probe', gap: 'mix', score: 45, dep: 'B', lvl: 'L0',
-    title: '回填荤签品类比例',
-    why: '荤素比例直接决定均价与全部营收测算。',
-    limit: '默认 60:30:10 是占位假设，未验证。',
-  };
-  const p = progress();
-  if (p.remain > 0 && p.need > projSkews()) return {
-    act: 'stall', score: 80, dep: 'A', lvl: 'L1',
-    title: '全力出摊追进度',
-    why: '剩余 ' + p.remain + ' 天需日均 ' + Math.round(p.need) + ' 签，我这边能力上限约 ' + projSkews() + ' 签。',
-    limit: '天气与现场客流属 C 类，我预测不了，现场处置由你兜底。',
-  };
-  return {
-    act: 'stall', score: 80, dep: 'A', lvl: 'L1',
-    title: '按节奏出摊',
-    why: '数据齐备，按当前模型推进即可。',
-    limit: '随机事件属 C 类，预测了也不算数。',
-  };
-}
-function tierOf(score) {
-  return score >= 80 ? '直接采纳' : score >= 60 ? '采纳，落地前人工抽验'
-    : score >= 31 ? '仅作参考输入，判断由人补全' : '人工独占，AI 不参与';
+const filledCount = () => GAPS.filter((x) => g(x.key).filled).length;
+const manualFilled = () => GAPS.filter((x) => x.src !== '自动' && g(x.key).filled).length;
+const unc = () => [40, 30, 20, 12, 8][manualFilled()];
+function rollWeather() {
+  const r = Math.random();
+  return r < 0.5 ? '晴' : r < 0.8 ? '阴' : r < 0.93 ? '小雨' : '暴雨';
 }
 
 /* ── 日志与弹层 ── */
-
-function log(msg, cls) {
-  const ul = $('log');
-  const li = document.createElement('li');
-  if (cls) li.className = cls;
-  li.innerHTML = '<span class="daymark">D' + S.day + '</span>' + msg;
-  ul.prepend(li);
-  while (ul.children.length > 60) ul.removeChild(ul.lastChild);
+function log(text, cls) {
+  S.logs.unshift({ day: S.day, text, cls: cls || '' });
+  if (S.logs.length > 40) S.logs.pop();
 }
+const mark = (t) => S.milestones.push(t);
 
 function openModal(html, btns) {
-  const m = $('modal');
   let tail = '';
   if (btns) {
     tail = '<div class="acts">' + btns.map((b, i) =>
       '<button data-i="' + i + '" class="' + (b.cls || '') + '">' + b.label + '</button>').join('') + '</div>';
   }
-  m.innerHTML = html + tail;
-  if (btns) btns.forEach((b, i) => { m.querySelector('button[data-i="' + i + '"]').onclick = b.fn; });
+  $('modal').innerHTML = html + tail;
+  if (btns) btns.forEach((b, i) => { $('modal').querySelector('button[data-i="' + i + '"]').onclick = b.fn; });
   $('overlay').classList.add('on');
 }
-function closeModal() { $('overlay').classList.remove('on'); }
+const closeModal = () => $('overlay').classList.remove('on');
+const busy = () => S.busy || S.finished;
 
-/* ── 回合动作 ── */
-
+/* ── 出摊与事件 ── */
 function doStall() {
+  if (busy()) return;
+  if (!S.rivalDone && S.day >= 15) { S.rivalDone = true; openRival(); return; }
   const ev = rollEvent();
   if (!ev) { finishStall(1); return; }
   if (ev.kind === 'auto') {
-    if (ev.next) S.nextMult *= ev.next;
-    log(ev.label + '：' + ev.text, ev.cls || 'warn');
+    if (ev.next) S.q.push(ev.next);
+    if (ev.wechat) S.wechat += ev.wechat;
+    log(ev.label + '：' + ev.text, ev.cls || '');
     finishStall(ev.mult);
     return;
   }
-  openEvent(ev);
+  openChoice(ev);
 }
-
-function finishStall(mult) {
-  const totalMult = mult * S.nextMult;
-  S.nextMult = 1;
-  const noise = 0.9 + Math.random() * 0.2;
-  const skews = Math.max(0, Math.round(150 * multCore() * totalMult * noise));
-  const rev = skews * avgPrice();
-  const waste = 0.06 + Math.random() * 0.07;
-  S.wasteSum += waste; S.wasteN += 1;
-  let note = '';
-  if (waste > LOCK.wasteCap) { S.violations += 1; S.weekViolations += 1; note = '，超纪律线'; }
-  const cost = rev * C.food * (1 + waste) + C.broth + C.stall;
-  S.cash += rev - cost;
-  S.cum.rev += rev; S.cum.cost += cost;
-  S.wechat += 3;
-  log('出摊 ' + skews + ' 签 → 流水 ' + money(rev) + '，扣成本净 ' + money(rev - cost) +
-      '，损耗 ' + (waste * 100).toFixed(1) + '%' + note,
-      note ? 'warn' : (skews >= 150 ? 'good' : ''));
-  commit({ day: S.day, act: '摊', skews: skews, rev: rev, cost: cost });
-}
-
-function fillProbe(key) {
-  const g = S.gaps[key];
-  if (g.done) return;
-  g.done = true;
-  S.cash -= C.probe; S.cum.act += C.probe;
-  if (key === 'anchor') {
-    S.pricing = 'locked';
-    g.val = '0.5–0.8 / 1–1.5 / 2–3 元';
-    log('探店回填：本地锚点 5 毛/签。军师当场作废 AI 通用定价——数据质量决定 AI 上限。', 'ai');
-  } else if (key === 'turn') {
-    g.val = '日接待上限 +8%';
-    log('探店回填：翻台率拿到手，日接待上限修正 +8%。', 'good');
-  } else if (key === 'mix') {
-    S.mix = [55, 35, 10];
-    g.val = '55 : 35 : 10';
-    log('探店回填：荤签品类比例 55:35:10，占位假设 60:30:10 作废。', 'good');
-  }
-  commit({ day: S.day, act: '探店', skews: 0, rev: 0, cost: C.probe });
-}
-
-function openProbePicker() {
-  const left = GAP_DEFS.filter((g) => g.method === '探店' && !S.gaps[g.key].done);
-  if (!left.length) return;
-  openModal(
-    '<h3>探店回填</h3><p class="tagline">实地行动：当天无营收，花费 ' + money(C.probe) +
-    '。带回来的数据直接改写军师的结论。</p>' +
-    left.map((g) => '<button class="opt" data-k="' + g.key + '"><b>' + g.label +
-      '</b><div class="tagline">证据等级将从 L0 升到 L1</div></button>').join(''),
-    [{ label: '取消', fn: closeModal }]
-  );
-  $('modal').querySelectorAll('button[data-k]').forEach((b) => {
-    b.onclick = () => { closeModal(); fillProbe(b.dataset.k); };
-  });
-}
-
-function openBlind() {
-  const names = ['A', 'B', 'C', 'D', 'E'];
-  const crit = ['闻香味', '耐煮度', '回甘'];
-  const sc = {};
-  names.forEach((n) => { sc[n] = {}; });
-  const body = () =>
-    '<h3>底料盲测</h3><p class="tagline">同锅同量、盲编号打分。评分表是 A 类流程，军师给得了；分是 C 类感官，必须你来打。当天无营收，花费 ' + money(C.blind) + '。</p>' +
-    '<table><tr><th>编号</th>' + crit.map((c) => '<th class="num">' + c + '</th>').join('') + '<th class="num">合计</th></tr>' +
-    names.map((n) => '<tr><td><b>' + n + '</b></td>' +
-      crit.map((c) => '<td class="num">' + [1, 2, 3, 4, 5].map((v) =>
-        '<button class="vbtn" data-n="' + n + '" data-c="' + c + '" data-v="' + v + '">' + v + '</button>').join('') +
-        '</td>').join('') +
-      '<td class="num" id="sum-' + n + '">–</td></tr>').join('') +
-    '</table><p class="tagline" id="blind-msg">五款全部打完才能提交。</p>';
-
-  openModal(body(), [
-    { label: '放弃', fn: closeModal },
-    { label: '提交评分', cls: 'primary', fn: submit },
-  ]);
-
-  $('modal').querySelectorAll('.vbtn').forEach((b) => {
-    b.onclick = () => {
-      const n = b.dataset.n, c = b.dataset.c, v = Number(b.dataset.v);
-      sc[n][c] = v;
-      $('modal').querySelectorAll('.vbtn[data-n="' + n + '"][data-c="' + c + '"]').forEach((x) => {
-        x.classList.toggle('on', Number(x.dataset.v) === v);
-      });
-      const sum = crit.reduce((a, k) => a + (sc[n][k] || 0), 0);
-      const filled = crit.every((k) => sc[n][k]);
-      $('sum-' + n).textContent = filled ? sum + ' / 15' : '–';
-    };
-  });
-
-  function submit() {
-    const missing = names.some((n) => crit.some((c) => !sc[n][c]));
-    if (missing) { $('blind-msg').textContent = '还有款没打完分。'; return; }
-    const totals = names.map((n) => crit.reduce((a, c) => a + sc[n][c], 0));
-    const best = Math.max.apply(null, totals);
-    const champ = names[totals.indexOf(best)];
-    S.quality = 1.05 + (best / 45) * 0.10;
-    const g = S.gaps.broth;
-    g.done = true;
-    g.val = '冠军 ' + champ + ' 款（' + best + '/45）';
-    S.cash -= C.blind; S.cum.act += C.blind;
-    log('盲测完成：冠军 ' + champ + ' 款（' + best + '/45），底料系数 → ' + S.quality.toFixed(2) +
-        '。当日花费 ' + money(C.blind) + '。', 'good');
-    closeModal();
-    commit({ day: S.day, act: '盲测', skews: 0, rev: 0, cost: C.blind });
-  }
-}
-
-/* ── C 类随机事件 ── */
 
 function rollEvent() {
   if (Math.random() > 0.35) return null;
-  const pool = [
-    { kind: 'auto', mult: 0.6, label: '下雨', text: '小雨，客流只剩六成。' },
-    { kind: 'auto', mult: 0, label: '商圈改造', text: '前方施工改造，今天没人。' },
-    { kind: 'auto', mult: 1, next: 1.05, label: '熟客推荐', text: '熟客带朋友来，加了 5 个微信。', cls: 'good' },
-    {
-      kind: 'choice', label: '设备故障', text: '卡式炉点不着火，串好的签等着下锅。',
-      options: [
-        { label: '找师傅修（军师给的渠道清单）', who: 'A 类 · 能力分 80 · 直接采纳', fn() {
-          S.cash -= 700; S.cum.event += 700; log('维修 700 元，军师的渠道清单一次搞定。', 'ai');
-        } },
-        { label: '自己捣鼓', who: 'C 类 · 现场活，军师够不着 · 人工独占', fn() {
-          if (Math.random() < 0.6) { S.cash -= 300; S.cum.event += 300; log('自己修好了，只花 300 元零件。', 'good'); }
-          else { S.cash -= 800; S.cum.event += 800; log('没修好还搭了零件，最后仍叫了师傅。', 'bad'); }
-        } },
-      ],
-    },
-    {
-      kind: 'choice', label: '恶意差评', text: '有人说「又贵又难吃」，还发了帖。',
-      options: [
-        { label: '诚恳回复并补偿', who: 'C 类 · 人工独占', fn() {
-          S.cash -= 100; S.cum.event += 100; log('回复加一份补偿，帖子没有扩大。', 'good');
-        } },
-        { label: '冷处理', who: 'C 类 · 人工独占', fn() {
-          S.nextMult *= 0.85; log('帖子发酵，明天客流受影响。', 'bad');
-        } },
-      ],
-    },
-    {
-      kind: 'choice', label: '对手降价', text: '隔壁摊把素签降到 3 毛，有人来问你跟不跟。',
-      options: [
-        { label: '守住品质带，不降价参战', who: '纪律一 · 军师强烈支持（能力分 80）', fn() {
-          S.nextMult *= 1.05; log('不跟。军师：守住品质带，让客人看到贵在哪。', 'ai');
-        } },
-        { label: '跟降 15%', who: '违反纪律一 · 军师强烈反对', fn() {
-          S.declines += 1; S.priceCut = true; S.nextMult *= 1.25;
-          log('跟降：签价 -15%，客流短暂回升，品质带失守。', 'bad');
-        } },
-      ],
-    },
-  ];
-  if (S.cash < 8000 && S.loans < 1) {
+  const pool = [];
+  if (S.weather === '小雨') pool.push({ kind: 'auto', mult: 0.7, label: '小雨', text: '雨天，客流只剩七成。' });
+  if (S.weather === '暴雨') pool.push({ kind: 'auto', mult: 0.45, label: '暴雨', text: '雨太大，街上没什么人。' });
+  pool.push({ kind: 'auto', mult: 0, label: '商圈改造', text: '前方施工围挡，今天没人。' });
+  pool.push({ kind: 'auto', mult: 1, next: 1.05, wechat: 5, label: '熟客推荐',
+    text: '熟客带朋友来，加了 5 个微信，明晚多来些人。', cls: 'good' });
+  pool.push({
+    kind: 'choice', label: '设备故障', text: '卡式炉点不着火，串好的签等着下锅。',
+    options: [
+      { label: '找师傅修', sub: '花 700 元，必成', fn() {
+        S.cash -= 700; S.cum.event += 700; log('维修花了 700 元，当天照常出摊。', '');
+      } },
+      { label: '自己捣鼓', sub: '六成花 300 修好；四成花 800 还得叫师傅', fn() {
+        if (Math.random() < 0.6) { S.cash -= 300; S.cum.event += 300; log('自己修好了，只花 300 元零件。', 'good'); }
+        else { S.cash -= 800; S.cum.event += 800; log('没修好，还是叫了师傅，花 800。', 'bad'); }
+      } },
+    ],
+  });
+  pool.push({
+    kind: 'choice', label: '恶意差评', text: '有人说「又贵又难吃」，还发了帖。',
+    options: [
+      { label: '诚恳回复并补偿', sub: '花 100 元，帖子不扩大', fn() {
+        S.cash -= 100; S.cum.event += 100; log('回复加一份补偿，帖子没有扩散。', 'good');
+      } },
+      { label: '冷处理', sub: '明晚客流 -15%', fn() {
+        S.q.push(0.85); log('帖子发酵，明晚客流受影响。', 'bad');
+      } },
+    ],
+  });
+  if (S.cash < 5000 && S.loans < 1) {
     pool.push({
-      kind: 'choice', label: '现金吃紧', text: '现金快见底，有人递来「周转贷」。',
+      kind: 'choice', label: '现金吃紧', text: '有人递来「周转贷」。',
       options: [
-        { label: '借钱周转 +' + money(C.loan), who: '违反纪律二 · 军师强烈反对 · 每周利息 400', fn() {
-          S.cash += C.loan; S.loans += 1; S.loanWeekly += C.loanWeekly;
-          log('借了 8,000 元。每周结算多一笔 400 元利息。', 'bad');
+        { label: '借 ' + money(L.loan), sub: '每周利息 400，本金不还', fn() {
+          S.cash += L.loan; S.loans += 1;
+          mark('第' + S.day + '天 你借了周转贷');
+          log('借了 8,000 元，每周多一笔 400 利息。', 'bad');
         } },
-        { label: '不借，收缩过日子', who: '纪律二 · 军师支持', fn() {
-          log('不借钱。军师：每步用上一步的利润。', 'ai');
+        { label: '不借，收缩过日子', sub: '每步用上一步的利润', fn() {
+          log('不借钱。', '');
         } },
       ],
     });
@@ -422,12 +444,12 @@ function rollEvent() {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
-function openEvent(ev) {
+function openChoice(ev) {
   openModal(
     '<h3>' + ev.label + '</h3><p>' + ev.text + '</p>' +
     ev.options.map((o, i) =>
-      '<button class="opt" data-o="' + i + '"><b>' + o.label + '</b><div class="tagline">' + o.who + '</div></button>').join(''),
-    [{ label: '现场处置……', fn: closeModal }]
+      '<button class="opt" data-o="' + i + '"><b>' + o.label + '</b><span>' + o.sub + '</span></button>').join(''),
+    null
   );
   $('modal').querySelectorAll('button[data-o]').forEach((b) => {
     b.onclick = () => {
@@ -438,250 +460,452 @@ function openEvent(ev) {
   });
 }
 
-/* ── 回合推进与结算 ── */
-
-function commit(rec) {
-  S.records.push(rec);
-  if (S.cash <= bottom()) { renderAll(); ending('bust'); return; }
-  if (S.day % 7 === 0) { weekly(S.day >= LOCK.days); return; }
-  S.day += 1;
-  renderAll();
-}
-
-function weekly(isLast) {
-  const days = S.records.slice(-7);
-  const sum = days.reduce((a, r) => a + r.skews, 0);
-  const weekAvg = sum / 7;
-  const auto = [];
-  if (S.day === 7) {
-    if (!S.gaps.daily.done) {
-      S.gaps.daily.done = true; S.gaps.daily.val = Math.round(weekAvg) + ' 签/天';
-      auto.push('实测日均 ' + Math.round(weekAvg) + ' 签/天');
-    }
-    if (S.wasteN > 0 && !S.gaps.waste.done) {
-      const w = (S.wasteSum / S.wasteN) * 100;
-      S.gaps.waste.done = true; S.gaps.waste.val = w.toFixed(1) + '%';
-      auto.push('实际损耗率 ' + w.toFixed(1) + '%');
-    }
-  }
-  const fines = S.weekViolations * C.fine;
-  const interest = S.loanWeekly;
-  if (fines > 0) { S.cash -= fines; S.cum.event += fines; }
-  if (interest > 0) { S.cash -= interest; S.cum.event += interest; }
-  S.weekViolations = 0;
-
-  const p = progress();
-  const fill = fillInfo();
-  const busted = S.cash <= bottom();
-  const comment = busted ? '现金触底，这局到头了。'
-    : weekAvg >= LOCK.stallDaily ? '本周达标。保持这个节奏。'
-    : p.need > projSkews() ? '按当前能力上限，剩余日需 ' + Math.round(p.need) + ' 签追不上——数据还没喂全。'
-    : '本周落后，但把缺口回填后还有机会。';
-
+function openRival() {
   openModal(
-    '<h3>第 ' + Math.ceil(S.day / 7) + ' 周结算</h3>' +
-    '<table>' +
-    '<tr><th>本周日均</th><td class="num">' + weekAvg.toFixed(0) + ' 签 / 目标 150</td></tr>' +
-    '<tr><th>累计日均</th><td class="num">' + p.avg.toFixed(0) + ' 签</td></tr>' +
-    '<tr><th>剩余进度</th><td class="num">' + (p.remain > 0 ? '剩 ' + p.remain + ' 天，需日均 ' + Math.round(p.need) + ' 签' : '—') + '</td></tr>' +
-    '<tr><th>现金</th><td class="num">' + money(S.cash) + '</td></tr>' +
-    (fines > 0 ? '<tr><th>损耗违规罚款</th><td class="num">-' + money(fines) + '</td></tr>' : '') +
-    (interest > 0 ? '<tr><th>借款利息</th><td class="num">-' + money(interest) + '</td></tr>' : '') +
-    '<tr><th>完整度</th><td class="num">' + fill.n + ' / ' + GAP_DEFS.length + '</td></tr>' +
-    (auto.length ? '<tr><th>自动回填</th><td class="num">' + auto.join('；') + '</td></tr>' : '') +
-    '</table>' +
-    '<p class="tagline">军师：' + comment + '</p>',
-    [{
-      label: isLast ? '查看结局' : '继续', cls: 'primary', fn() {
-        closeModal();
-        if (busted) { ending('bust'); return; }
-        if (isLast) { finalEnding(); return; }
-        S.day += 1;
-        renderAll();
-      },
-    }]
+    '<h3>对手降价</h3><p>隔壁新来了个摊，素签直接降到 3 毛，有人来问你跟不跟。</p>' +
+    '<button class="opt" data-o="0"><b>守价，推套餐应对</b><span>明晚客流 +5%，价格不丢</span></button>' +
+    '<button class="opt" data-o="1"><b>跟降 15%</b><span>签价永久 -15%：明晚多来人，随后三天老客流失</span></button>',
+    null
   );
-}
-
-function finalEnding() {
-  const p = progress();
-  ending(p.avg >= LOCK.stallDaily ? 'pass' : 'fail');
-}
-
-function ending(kind) {
-  S.finished = true;
-  const p = progress();
-  const fill = fillInfo();
-  let title, body;
-  if (kind === 'bust') {
-    title = '第一阶段失败';
-    body = '累计亏损触到 2 万底线，出局。demo 的原话：不押大钱、不留退路问题是零。';
-  } else if (kind === 'pass') {
-    title = '达标晋级';
-    body = '连续 4 周日均 ' + p.avg.toFixed(0) + ' 签（目标 150），配方与客流验证通过——下一站：社区档口店。';
-  } else {
-    title = '未达标';
-    body = '首月日均 ' + p.avg.toFixed(0) + ' 签，差 ' + (LOCK.stallDaily - p.avg).toFixed(0) +
-      ' 签。demo 里摆摊期最长 3 个月，本原型先考第一个月：复盘缺口，再开一局。';
-  }
-  openModal(
-    '<h3>' + title + '</h3><p>' + body + '</p>' +
-    '<table>' +
-    '<tr><th>总日均</th><td class="num">' + p.avg.toFixed(0) + ' 签</td></tr>' +
-    '<tr><th>情报完整度</th><td class="num">' + fill.n + ' / ' + GAP_DEFS.length + '</td></tr>' +
-    '<tr><th>现金</th><td class="num">' + money(S.cash) + '</td></tr>' +
-    '<tr><th>损耗违规</th><td class="num">' + S.violations + ' 次</td></tr>' +
-    '<tr><th>跟降 / 借款</th><td class="num">' + S.declines + ' 次 / ' + S.loans + ' 次</td></tr>' +
-    '<tr><th>攒下微信</th><td class="num">' + S.wechat + ' 个（3 个月目标 300）</td></tr>' +
-    '</table>',
-    [{ label: '重新开局', cls: 'primary', fn() { closeModal(); reset(); renderAll(); } }]
-  );
-  renderAll();
-}
-
-/* ── 渲染 ── */
-
-function renderAll() {
-  const p = progress();
-  const fill = fillInfo();
-  const wk = Math.ceil(S.day / 7);
-  $('h-day').innerHTML = '第 <b>' + S.day + '</b> 天 · 第 <b>' + wk + '</b> 周';
-  $('h-cash').innerHTML = '现金 <b>' + money(S.cash) + '</b>';
-  $('h-bottom').innerHTML = '风险底线 <b>' + money(bottom()) + '</b>';
-  $('h-bar').style.width = (fill.ratio * 100) + '%';
-  $('h-fill').textContent = fill.n + '/' + GAP_DEFS.length;
-
-  const anchorMissing = !S.gaps.anchor.done;
-  const badge = anchorMissing
-    ? '<span class="badge bad">⚠ 定价未回填，营收结论以 AI 通用模型试算，待补全</span>'
-    : (fill.n < GAP_DEFS.length ? '<span class="badge warn">含 ' + (GAP_DEFS.length - fill.n) + ' 项传闻值，完整度 ' + Math.round(fill.ratio * 100) + '%</span>' : '');
-  const price = avgPrice();
-  const proj = projSkews();
-
-  $('adv-cards').innerHTML =
-    '<div class="card"><div class="tagline">累计日均（达标线 150 签/天）</div>' +
-    '<div class="big">' + p.avg.toFixed(0) + ' <span style="font-size:14px;font-weight:400">签/天</span></div>' +
-    '<div class="tagline">' + (p.remain > 0 ? '剩 ' + p.remain + ' 天，需日均 ' + Math.round(p.need) + ' 签' : '本期已结束') + '</div>' + badge + '</div>' +
-    '<div class="card"><div class="tagline">今日测算</div>' +
-    '<div>' + Math.round(proj * 0.9) + '–' + Math.round(proj * 1.1) + ' 签 <span class="tag lock">锁</span></div>' +
-    '<div>流水 ' + money(proj * 0.9 * price) + '–' + money(proj * 1.1 * price) +
-    (anchorMissing ? ' <span class="tag bad">传闻</span>' : ' <span class="tag lock">锁</span>') + '</div>' +
-    '<div class="tagline">均价 ' + price.toFixed(3) + ' 元/签' + (S.priceCut ? '（跟降 -15%）' : '') + '</div></div>' +
-    '<div class="card"><div class="tagline">现金与底线</div>' +
-    '<div>' + money(S.cash) + ' · 距底线 ' + money(S.cash - bottom()) + '</div>' +
-    '<div class="tagline">本周违规 ' + S.weekViolations + ' 次 · 累计 ' + S.violations + ' 次</div></div>';
-
-  renderAdvice();
-  renderGaps();
-  renderActions();
-  renderLedger();
-  renderCalc();
-  renderDisc();
-}
-
-function renderAdvice() {
-  const el = $('adv-advice');
-  if (S.finished) { el.innerHTML = '<div class="card tagline">本局已结束，可重新开局。</div>'; return; }
-  const a = advice();
-  el.innerHTML =
-    '<div class="card"><div><b>' + a.title + '</b></div>' +
-    '<div class="tagline">能力分 ' + a.score + ' · 输入依赖 ' + a.dep + ' · 证据 ' + a.lvl + ' → ' + tierOf(a.score) + '</div>' +
-    '<div style="margin-top:6px">依据：' + a.why + '</div>' +
-    '<div class="tagline">局限：' + a.limit + '</div>' +
-    '<div style="margin-top:8px;display:flex;gap:8px">' +
-    '<button class="primary" id="adv-take">采纳并执行</button>' +
-    '<button id="adv-skip">仅作参考</button></div></div>';
-  $('adv-take').onclick = runAdvice;
-  $('adv-skip').onclick = () => { log('军师建议仅作参考，按你的判断行动。', 'ai'); };
-}
-
-function runAdvice() {
-  const a = advice();
-  if (a.act === 'stall') doStall();
-  else if (a.act === 'probe') fillProbe(a.gap);
-  else openBlind();
-}
-
-function renderGaps() {
-  const el = $('adv-gaps');
-  el.innerHTML = GAP_DEFS.map((g) => {
-    const st = S.gaps[g.key];
-    let right;
-    if (st.done) right = '<span style="color:var(--good)">' + st.val + '</span>';
-    else if (g.method === '自动') right = '<span class="tagline">待自动回填</span>';
-    else if (S.finished) right = '<span class="tagline">—</span>';
-    else right = '<button class="field" data-gap="' + g.key + '">' + g.method + '</button>';
-    return '<div class="gaprow"><span>' + g.label + '<span class="tagline"> · ' + g.method + '</span></span>' + right + '</div>';
-  }).join('');
-  el.querySelectorAll('button[data-gap]').forEach((b) => {
+  $('modal').querySelectorAll('button[data-o]').forEach((b) => {
     b.onclick = () => {
-      const g = GAP_DEFS.find((x) => x.key === b.dataset.gap);
-      if (g.method === '盲测') openBlind(); else fillProbe(g.key);
+      if (Number(b.dataset.o) === 0) {
+        S.q.push(1.05);
+        log('守住价格，推套餐应对，明晚客流 +5%。', 'good');
+        mark('第' + S.day + '天 你守住了价格');
+      } else {
+        S.declines += 1; S.priceCut = true; S.q.push(1.25, 0.9, 0.85, 0.8);
+        log('跟降 15%：明晚多来人，之后三天老客流失。', 'bad');
+        mark('第' + S.day + '天 你跟了降价——三天老客流失');
+      }
+      closeModal();
+      finishStall(1);
     };
   });
 }
 
-function renderActions() {
-  const probeLeft = GAP_DEFS.some((g) => g.method === '探店' && !S.gaps[g.key].done);
-  const blindLeft = !S.gaps.broth.done;
-  $('act-buttons').innerHTML =
-    '<button class="primary" id="a-stall"' + (S.finished ? ' disabled' : '') + '>出摊营业</button>' +
-    '<button class="field" id="a-probe"' + (S.finished || !probeLeft ? ' disabled' : '') + '>探店回填</button>' +
-    '<button class="field" id="a-blind"' + (S.finished || !blindLeft ? ' disabled' : '') + '>底料盲测</button>';
-  $('act-hint').textContent = '每天只能做一件事；探店与盲测当天无营收，但把传闻换成实测。';
-  if (!S.finished) {
-    $('a-stall').onclick = doStall;
-    $('a-probe').onclick = openProbePicker;
-    $('a-blind').onclick = openBlind;
+function finishStall(mult) {
+  S.busy = true;
+  const total = mult * (S.q.length ? S.q.shift() : 1);
+  const noise = 0.9 + Math.random() * 0.2;
+  const skews = Math.max(0, Math.round(L.target * multCore() * total * noise));
+  const price = avgPrice();
+  const rev = skews * price;
+  let waste = 0.06 + Math.random() * 0.07;
+  if (g('mix').filled) waste = 0.05 + Math.random() * 0.05;
+  S.wasteSum += waste; S.wasteN += 1;
+  let note = '';
+  if (waste > L.wasteCap) { S.violations += 1; S.weekViolations += 1; note = '，损耗超线'; }
+  const cost = rev * L.food * (1 + waste) + L.broth + L.stall;
+  const net = rev - cost;
+  S.cash += net;
+  S.cum.rev += rev; S.cum.cost += cost;
+  S.wechat += 3;
+  S.guests = Math.max(0, Math.min(9, Math.round(skews / 25)));
+  S.records.push({ day: S.day, act: '出摊', skews, rev, cost });
+  S.lastResult = { kind: 'stall', day: S.day, skews, rev, net, waste, note };
+  log('出摊 ' + skews + ' 签，流水 ' + money(rev) + '，净 ' + money(net) +
+      '，损耗 ' + (waste * 100).toFixed(1) + '%' + note,
+      note ? 'warn' : (skews >= L.target ? 'good' : ''));
+  settle('+' + skews + '签');
+}
+
+/* ── 探店 ── */
+function openProbePicker() {
+  if (busy() || S.day === 1) return;
+  const left = GAPS.filter((x) => x.src === '探店' && !g(x.key).filled);
+  if (!left.length) return;
+  openModal(
+    '<h3>探店调研</h3><p class="tag">花 ' + money(L.probe) + '，今天不出摊，换回一条实测。</p>' +
+    left.map((x) => '<button class="opt" data-k="' + x.key + '"><b>' + x.label + '</b><span>' + x.how + '</span></button>').join(''),
+    [{ label: '再想想', fn: closeModal }]
+  );
+  $('modal').querySelectorAll('button[data-k]').forEach((b) => {
+    b.onclick = () => { closeModal(); fillProbe(b.dataset.k); };
+  });
+}
+
+function fillProbe(key) {
+  if (busy() || S.day === 1) return;
+  const def = GAPS.find((x) => x.key === key);
+  const gap = g(key);
+  if (!def || def.src !== '探店' || gap.filled || S.cash < L.probe) return;
+  S.busy = true;
+  gap.filled = true; gap.day = S.day;
+  S.cash -= L.probe; S.cum.act += L.probe;
+  if (key === 'price') { S.pricing = 'locked'; gap.val = '0.65 / 1.25 / 2.5 元'; }
+  else if (key === 'crowd') { gap.val = '接待上限 +15%'; }
+  else if (key === 'mix') { S.mix = [55, 35, 10]; gap.val = '55 : 35 : 10'; }
+  S.records.push({ day: S.day, act: '探店', skews: 0, rev: 0, cost: L.probe });
+  S.lastResult = { kind: 'probe', day: S.day, text: '探店：带回「' + def.label + '」实测' };
+  log('探店回填「' + def.label + '」：' + gap.val + '。', 'good');
+  mark('第' + S.day + '天 你去探了店');
+  settle('实测到手');
+}
+
+/* ── 盲测 ── */
+function openBlind() {
+  if (busy() || S.day === 1) return;
+  if (g('broth').filled || S.cash < L.blind) return;
+  const names = ['A', 'B', 'C', 'D', 'E'];
+  const crit = ['闻香', '耐煮', '回甘'];
+  const sc = {};
+  names.forEach((n) => { sc[n] = {}; });
+  openModal(
+    '<h3>底料盲测</h3><p class="tag">花 ' + money(L.blind) + '，今天不出摊。五款编号，三个维度各打 1–5 分。</p>' +
+    '<table><tr><th>编号</th>' + crit.map((c) => '<th>' + c + '</th>').join('') + '<th>合计</th></tr>' +
+    names.map((n) => '<tr><td><b>' + n + '</b></td>' +
+      crit.map((c) => '<td>' + [1, 2, 3, 4, 5].map((v) =>
+        '<button class="vbtn" data-n="' + n + '" data-c="' + c + '" data-v="' + v + '">' + v + '</button>').join('') +
+        '</td>').join('') +
+      '<td id="sum-' + n + '">–</td></tr>').join('') +
+    '</table><p class="tag" id="blind-msg">五款全部打完才能提交。</p>',
+    [{ label: '放弃', fn: closeModal }, { label: '提交评分', cls: 'primary', fn: submit }]
+  );
+  $('modal').querySelectorAll('.vbtn').forEach((b) => {
+    b.onclick = () => {
+      const n = b.dataset.n, c = b.dataset.c, v = Number(b.dataset.v);
+      sc[n][c] = v;
+      $('modal').querySelectorAll('.vbtn[data-n="' + n + '"][data-c="' + c + '"]').forEach((x) => {
+        x.classList.toggle('on', Number(x.dataset.v) === v);
+      });
+      const done = crit.every((k) => sc[n][k]);
+      const sum = crit.reduce((a, k) => a + (sc[n][k] || 0), 0);
+      $('sum-' + n).textContent = done ? sum + ' / 15' : '–';
+    };
+  });
+  function submit() {
+    if (names.some((n) => crit.some((c) => !sc[n][c]))) {
+      $('blind-msg').textContent = '还有款没打完分。';
+      return;
+    }
+    if (busy()) return;
+    S.busy = true;
+    const totals = names.map((n) => crit.reduce((a, c) => a + sc[n][c], 0));
+    const best = Math.max.apply(null, totals);
+    const champ = names[totals.indexOf(best)];
+    S.quality = 1.08 + (best / 15) * 0.07;
+    const gap = g('broth');
+    gap.filled = true; gap.day = S.day;
+    gap.val = champ + ' 款（' + best + '/45）';
+    S.cash -= L.blind; S.cum.act += L.blind;
+    S.records.push({ day: S.day, act: '盲测', skews: 0, rev: 0, cost: L.blind });
+    S.lastResult = { kind: 'blind', day: S.day, text: '盲测：' + champ + ' 款胜出，底料系数 ' + S.quality.toFixed(2) };
+    log('盲测：冠军 ' + champ + ' 款（' + best + '/45），底料系数 ' + S.quality.toFixed(2) + '。', 'good');
+    mark('第' + S.day + '天 你盲测出冠军料');
+    closeModal();
+    settle('冠军 ' + champ + ' 款');
   }
+}
+
+/* ── 回合推进 ── */
+function settle(floatText) {
+  show('pg-main');
+  renderMain();
+  const fl = $('float');
+  fl.textContent = floatText;
+  fl.classList.remove('go');
+  void fl.offsetWidth;
+  fl.classList.add('go');
+  setTimeout(() => { S.busy = false; endDay(); }, 1500);
+}
+
+function endDay() {
+  if (S.cash <= L.bottom) { renderEnding('bust'); show('pg-ending'); return; }
+  if (S.day % 7 === 0) { renderWeekly(); show('pg-weekly'); return; }
+  advanceDay();
+}
+
+function advanceDay() {
+  S.day += 1;
+  S.weather = rollWeather();
+  const w = Math.ceil(S.day / 7);
+  if (S.fc[w - 1] == null) S.fc[w - 1] = { v: Math.round(L.target * multCore()), u: unc() };
+  show('pg-main');
+  renderMain();
+}
+
+function weekStats(w) {
+  const from = (w - 1) * 7 + 1, to = w * 7;
+  const rs = S.records.filter((r) => r.day >= from && r.day <= to);
+  const stalls = rs.filter((r) => r.act === '出摊');
+  const sum = stalls.reduce((a, r) => a + r.skews, 0);
+  return { n: stalls.length, avg: stalls.length ? sum / stalls.length : null };
+}
+
+function renderWeekly() {
+  const w = Math.ceil(S.day / 7);
+  const st = weekStats(w);
+  const f = S.fc[w - 1];
+  const fc = f ? f.v : null;
+  const err = (fc != null && st.avg != null) ? Math.round(Math.abs(fc - st.avg) / st.avg * 100) : null;
+  S.errors[w - 1] = err;
+  if (!S.paidWeeks[w]) {
+    S.paidWeeks[w] = true;
+    const fines = S.weekViolations * L.fine;
+    const interest = S.loans * L.loanInt;
+    if (fines > 0) { S.cash -= fines; S.cum.event += fines; log('损耗违规罚款 ' + money(fines) + '。', 'bad'); }
+    if (interest > 0) { S.cash -= interest; S.cum.event += interest; log('借款利息 ' + money(interest) + '。', 'bad'); }
+    S.weekViolations = 0;
+    if (w === 1) {
+      if (st.avg != null) {
+        const gp = g('weekAvg');
+        gp.filled = true; gp.day = 7; gp.val = Math.round(st.avg) + ' 签';
+      }
+      if (S.wasteN > 0) {
+        const gp = g('waste');
+        gp.filled = true; gp.day = 7;
+        gp.val = ((S.wasteSum / S.wasteN) * 100).toFixed(1) + '%';
+      }
+    }
+  }
+
+  $('wk-title').textContent = '第 ' + w + ' 周 · 结算';
+  const rows = [];
+  rows.push(row('军师周一预测', fc == null ? '—' : fc + ' 签/天' + (f.u ? '（±' + f.u + '%）' : '（我很有把握）')));
+  rows.push(row('实际出摊日均', st.avg == null ? '本周没出摊' : st.avg.toFixed(0) + ' 签/天'));
+  rows.push(row('现金', money(S.cash)));
+  rows.push(row('缺口', (GAPS.length - filledCount()) + ' 个待回填'));
+  $('wk-rows').innerHTML = rows.join('');
+
+  const fill = $('wk-fill');
+  if (err == null) {
+    fill.style.width = '0%';
+    $('wk-cap').textContent = '没有对照，谈不上误差';
+  } else {
+    fill.style.width = Math.min(100, err) + '%';
+    fill.className = 'wk-fill' + (err > 30 ? '' : err > 15 ? ' mid' : ' on');
+    const prev = w > 1 ? S.errors[w - 2] : null;
+    let cap = '误差 ±' + err + '%';
+    if (w === 1) cap += st.avg < fc ? '——说好的 150 呢' : '——我居然报少了';
+    else if (prev != null) cap += err < prev ? '，比上周收窄 ' + (prev - err) + ' 个点' : '，比上周扩大 ' + (err - prev) + ' 个点';
+    $('wk-cap').textContent = cap;
+  }
+
+  const firstUnfilled = GAPS.find((x) => x.src !== '自动' && !g(x.key).filled);
+  let comment;
+  if (S.cash <= L.bottom) comment = '现金见底，这局到头了。';
+  else if (st.avg == null) comment = '一周没出摊，什么都没验证。';
+  else if (firstUnfilled) comment = '误差主要卡在「' + firstUnfilled.label + '」——你帮我拿到它，下周能压到 ±' +
+    Math.max(8, unc() - 8) + '。';
+  else comment = '数据齐了，我这边没什么可猜的了。';
+  $('wk-comment').textContent = '军师：' + comment;
+
+  $('b-wk').textContent = S.day >= 28 ? '查看结局' : '进入第 ' + (w + 1) + ' 周';
+}
+const row = (k, v) => '<div class="srow"><span>' + k + '</span><span class="num">' + v + '</span></div>';
+
+function weeklyNext() {
+  if (S.day >= 28) {
+    renderEnding(S.cash <= L.bottom ? 'bust' : null);
+    show('pg-ending');
+    return;
+  }
+  advanceDay();
+}
+
+/* ── 结局 ── */
+function renderEnding(kind) {
+  S.finished = true;
+  const p = progress();
+  const filled = filledCount();
+  let title, quote, cls;
+  if (kind === 'bust') {
+    title = '触底出局';
+    quote = '现金见底，这局到此为止。下局先活下来。';
+    cls = 'bad';
+  } else {
+    const pass = p.avg >= L.target;
+    const ready = filled >= 5;
+    if (pass && ready) { title = '你心里有数'; quote = '军师的模型，你的数字——这摊子，是你的了'; cls = 'good'; }
+    else if (pass && !ready) { title = '运气替你付了学费'; quote = '这局是蒙的，赌场没有常胜将军'; cls = 'warn'; }
+    else if (!pass && ready) { title = '数字对了，执行输了'; quote = '课你已学会，输在别的账上'; cls = 'warn'; }
+    else { title = '你全程在赌'; quote = '最疼的一局，也最该记住'; cls = 'bad'; }
+  }
+  $('end-title').textContent = title;
+  $('end-title').className = cls;
+  $('end-a').textContent = '日均 ' + p.avg.toFixed(0) + ' 签 · 盈余 ' + money(S.cash - L.start);
+  $('end-b').textContent = GAPS.length + ' 个数字，' + filled + ' 个是你亲手拿的';
+  $('end-quote').textContent = '「' + quote + '」';
+}
+
+/* ── 复盘 ── */
+function renderRecap() {
+  const errs = S.errors.map((e, i) => ({ w: i + 1, e })).filter((x) => x.e != null);
+  if (errs.length >= 2) {
+    $('rc-head').textContent = '预测误差 ' + errs[0].e + '% → ' + errs[errs.length - 1].e + '%';
+  } else if (errs.length === 1) {
+    $('rc-head').textContent = '预测误差 ±' + errs[0].e + '%';
+  } else {
+    $('rc-head').textContent = '没有出摊对照，没有误差记录';
+  }
+  $('rc-chart').innerHTML = errs.map((x) =>
+    '<div class="rc-row"><span class="w">第' + x.w + '周</span>' +
+    '<span class="rc-track"><span class="rc-fill ' + (x.e > 30 ? 'hi' : x.e <= 15 ? 'lo' : '') +
+    '" style="width:' + Math.min(100, x.e) + '%"></span></span>' +
+    '<span class="v">±' + x.e + '%</span></div>').join('');
+  $('rc-marks').innerHTML = S.milestones.length
+    ? S.milestones.map((m) => '<li>' + m + '</li>').join('')
+    : '<li>这 28 天风平浪静。</li>';
+}
+
+/* ── 渲染 ── */
+function show(id) {
+  document.querySelectorAll('.page').forEach((p) => p.classList.toggle('on', p.id === id));
+  window.scrollTo(0, 0);
+}
+
+function renderMain() {
+  const w = Math.min(4, Math.ceil(S.day / 7));
+  const p = progress();
+  $('h-day').innerHTML = '第 <b>' + S.day + '</b> 天 · 第 <b>' + w + '</b> 周';
+  $('h-cash').innerHTML = '现金 <b>' + money(S.cash) + '</b>';
+  $('h-avg').textContent = '日均 ' + p.avg.toFixed(0) + ' / ' + L.target;
+  const fill = $('h-fill');
+  fill.style.width = Math.min(100, (p.avg / L.target) * 100) + '%';
+  fill.className = 'fill' + (p.avg >= L.target ? ' on' : p.avg >= L.target * 0.85 ? ' mid' : '');
+  renderScene();
+  renderAdvisor();
+  renderCards();
+  renderBar();
+}
+
+function renderScene() {
+  $('sc-weather').textContent = '夜市 · ' + S.weather;
+  const rain = $('sc-rain');
+  if (S.weather === '小雨') { rain.style.display = 'block'; rain.className = 'rain'; }
+  else if (S.weather === '暴雨') { rain.style.display = 'block'; rain.className = 'rain heavy'; }
+  else { rain.style.display = 'none'; }
+  const gr = $('sc-guests');
+  gr.innerHTML = '';
+  for (let i = 0; i < S.guests; i++) {
+    const d = document.createElement('i');
+    d.className = 'guest' + (i % 2 ? ' b' : '');
+    gr.appendChild(d);
+  }
+  $('sc-rival').style.display = S.day >= 15 ? 'block' : 'none';
+  const r = S.lastResult;
+  let note;
+  if (!r) note = '今天做什么，你定。';
+  else {
+    const prefix = r.day === S.day ? '' : '昨日 ';
+    if (r.kind === 'stall') {
+      note = prefix + '出摊 ' + r.skews + ' 签 · 流水 ' + money(r.rev) + ' · 净 ' + money(r.net) +
+        ' · 损耗 ' + (r.waste * 100).toFixed(1) + '%' + (r.note || '');
+    } else note = prefix + r.text;
+  }
+  $('sc-note').textContent = note;
+}
+
+function advisorLine() {
+  if (S.day === 1) return '日均 150，没问题！我这版模型很稳。今天先出摊，我给你打个样。';
+  if (S.day === 3) return '这几个数我是编的。你去隔壁摊数一晚，我才能算准。';
+  if (S.cash < 3000) return '现金快见底了，别再花钱探店，先出摊回血。';
+  if (S.priceCut) return '跟降的账迟早要还——你看，老客已经在走了。';
+  const base = '我赌今晚 ' + projSkews() + ' 签';
+  if (!g('price').filled) return base + '——不过别家卖多少钱，我是猜的。';
+  if (!g('crowd').filled) return base + '——不过这条街有多少人，我是猜的。';
+  if (!g('broth').filled) return base + '——不过底料谁最强，得靠你的舌头。';
+  if (!g('mix').filled) return base + '——不过客人爱荤爱素，我是猜的。';
+  return base + '——这回每个数都是你亲手拿的。';
+}
+const renderAdvisor = () => { $('adv-line').textContent = advisorLine(); };
+
+function renderCards() {
+  const day1 = S.day === 1;
+  const probeLeft = GAPS.some((x) => x.src === '探店' && !g(x.key).filled);
+  const blindLeft = !g('broth').filled;
+  $('b-stall').disabled = busy();
+  $('b-probe').disabled = busy() || day1 || !probeLeft || S.cash < L.probe;
+  $('b-blind').disabled = busy() || day1 || !blindLeft || S.cash < L.blind;
+  $('c-stall-sub').textContent = '今天赚钱\n' + (S.pricing === 'locked' ? '按实测的价格经营' : '但按猜的数字经营');
+  $('c-probe-sub').textContent = probeLeft
+    ? money(L.probe) + '，花一天\n把猜变实测'
+    : '该探的都探完了';
+  $('c-blind-sub').textContent = blindLeft
+    ? money(L.blind) + '，花一天\n找冠军底料'
+    : '已锁定 ' + g('broth').val;
+  $('hint').textContent = day1
+    ? '军师：今天先出摊，我给你打个样。'
+    : '每天只能做一件事：出摊赚钱，或花一天把猜测换成实测。';
+}
+
+function renderBar() {
+  const left = GAPS.filter((x) => !g(x.key).filled).length;
+  $('tab-gaps').textContent = '缺口（' + left + '）';
 }
 
 function renderLedger() {
-  const last = S.records[S.records.length - 1];
   const net = S.cum.rev - S.cum.cost;
-  let rows = '';
-  if (last) {
-    rows +=
-      '<tr><th>D' + last.day + ' ' + last.act + '</th><td class="num">流水 ' + money(last.rev) +
-      ' · 成本 ' + money(last.cost) + '</td></tr>';
+  $('ld-body').innerHTML =
+    row('累计流水', money(S.cum.rev)) +
+    row('累计经营成本', money(S.cum.cost)) +
+    row('累计净赚', money(net)) +
+    row('行动支出', money(S.cum.act)) +
+    row('事件与罚息', money(S.cum.event)) +
+    '<div class="srow total"><span>现金</span><span class="num">' + money(S.cash) + '</span></div>' +
+    '<div class="logs">' + S.logs.slice(0, 8).map((l) =>
+      '<div class="log ' + l.cls + '"><span>D' + l.day + '</span>' + l.text + '</div>').join('') +
+    '</div>';
+}
+
+function renderGaps() {
+  $('gp-body').innerHTML = GAPS.map((x) => {
+    const gp = g(x.key);
+    let right;
+    if (gp.filled) right = '<span class="ok">' + gp.val + '</span>';
+    else if (x.src === '自动') right = '<span class="mut">第一周结算回填</span>';
+    else right = '<button class="mini" data-k="' + x.key + '"' +
+      ((S.day === 1 || busy()) ? ' disabled' : '') + '>' + x.src + '</button>';
+    const state = gp.filled ? '已实测' : (x.src === '自动' ? '待回填' : '军师在猜 · 影响预测 ±' + unc() + '%');
+    return '<div class="grow"><div><b>' + x.label + '</b><small class="mut">' + state + '</small></div>' + right + '</div>';
+  }).join('');
+  $('gp-body').querySelectorAll('button[data-k]').forEach((b) => {
+    b.onclick = () => {
+      closeSheets();
+      if (b.dataset.k === 'broth') openBlind();
+      else openProbePicker();
+    };
+  });
+}
+
+function closeSheets() {
+  $('sh-ledger').classList.remove('on');
+  $('sh-gaps').classList.remove('on');
+}
+function toggleSheet(id) {
+  const el = $(id);
+  const on = el.classList.contains('on');
+  closeSheets();
+  if (!on) {
+    if (id === 'sh-ledger') renderLedger();
+    else renderGaps();
+    el.classList.add('on');
   }
-  rows +=
-    '<tr><th>累计流水</th><td class="num">' + money(S.cum.rev) + '</td></tr>' +
-    '<tr><th>累计经营成本</th><td class="num">' + money(S.cum.cost) + '</td></tr>' +
-    '<tr><th>累计净额</th><td class="num">' + money(net) + '</td></tr>' +
-    '<tr><th>行动支出</th><td class="num">' + money(S.cum.act) + '</td></tr>' +
-    '<tr><th>事件与罚息</th><td class="num">' + money(S.cum.event) + '</td></tr>';
-  $('ledger').innerHTML = rows;
 }
 
-function renderCalc() {
-  const ai = S.pricing === 'ai';
-  const price = avgPrice();
-  const terms = ['基数 150（锁）', ai ? '定价 ×0.78（传闻）' : '定价 ×1.00（锁）'];
-  terms.push(S.gaps.broth.done ? '底料 ×' + S.quality.toFixed(2) + '（盲测实测）' : '底料 未回填');
-  terms.push(S.gaps.turn.done ? '翻台 ×1.08（实测）' : '翻台 未回填');
-  const waste = S.wasteN > 0 ? ((S.wasteSum / S.wasteN) * 100).toFixed(1) + '%' : '未回填';
-  $('calc').innerHTML = [
-    '均价 = ' + S.mix.join(':') + ' × ' + (ai ? 'AI 通用模型 1 / 2 / 3 元（传闻）' : '本地锚点 0.65 / 1.25 / 2.5 元（锁）') +
-      (S.priceCut ? ' × 0.85（跟降）' : '') + ' = ' + price.toFixed(3) + ' 元/签',
-    '日均签数 ≈ ' + terms.join(' × ') + ' = ' + projSkews(),
-    '成本 = 流水 × 35% × (1 + 损耗 ' + waste + ') + 底料 7 + 摊位 80（摊位费为 L0 占位）',
-    '达标 = 28 天累计 ÷ 28 ≥ 150 签/天（锁：连续 4 周日均 150）',
-  ].map((x) => '<div>' + x + '</div>').join('');
+/* ── 启动 ── */
+function newGame() {
+  reset();
+  show('pg-open');
 }
 
-function renderDisc() {
-  const waste = S.wasteN > 0 ? ((S.wasteSum / S.wasteN) * 100).toFixed(1) + '%' : '未回填';
-  $('disc').innerHTML =
-    '<div class="discipline">不降价参战 — ' +
-      (S.declines > 0 ? '<span class="no">违反 ' + S.declines + ' 次</span>' : '<span class="ok">遵守</span>') + '</div>' +
-    '<div class="discipline">不借钱升级 — ' +
-      (S.loans > 0 ? '<span class="no">违反 ' + S.loans + ' 次，周息 ' + money(S.loanWeekly) + '</span>' : '<span class="ok">遵守</span>') + '</div>' +
-    '<div class="discipline">损耗 ≤ 10% — 本周违规 ' + S.weekViolations + ' 次 · 累计均值 ' + waste + '</div>';
-}
+$('b-start').onclick = () => { show('pg-main'); renderMain(); };
+$('b-stall').onclick = doStall;
+$('b-probe').onclick = openProbePicker;
+$('b-blind').onclick = openBlind;
+$('tab-ledger').onclick = () => toggleSheet('sh-ledger');
+$('tab-gaps').onclick = () => toggleSheet('sh-gaps');
+document.querySelectorAll('button[data-close]').forEach((b) => {
+  b.onclick = () => $(b.dataset.close).classList.remove('on');
+});
+$('b-wk').onclick = weeklyNext;
+$('b-recap').onclick = () => { renderRecap(); show('pg-recap'); };
+$('b-again1').onclick = newGame;
+$('b-again2').onclick = newGame;
 
 reset();
-renderAll();
+show('pg-open');
 </script>
 </body>
 </html>
