@@ -1,0 +1,79 @@
+# 发布站点：推送 site/* 或 v* tag（如 site/v0.1.0，由 qtcloud-devops release publish 创建）
+# 或手动触发 workflow 时，把 src/ 静态文件上传到 OSS 发布桶（qtgame-tycoon-site，
+# 静态网站托管），并刷新 CDN 缓存。
+#
+# 对齐 qtfounder 的 deploy-site.yml 模式：
+#   tag → Actions（ossutil cp）→ OSS 桶（qtgame-tycoon-site）
+#   → CDN（tycoon.game.quanttide.com）→ 用户浏览器
+#
+# 与 qtfounder 的差异：本站是单文件纯静态页（src/index.html），无 npm 构建步骤；
+# 当前没有哈希资源目录，入口固定 no-cache 即可。后续新增 assets/ 时再补长缓存步骤。
+#
+# 前置条件（均在 CI 之外完成）：
+#   - OSS 桶 qtgame-tycoon-site 已创建并开启静态网站托管（默认首页 index.html）
+#   - CDN 域名 tycoon.game.quanttide.com 接入并回源该桶；
+#     注意证书需覆盖二级域名（*.quanttide.com 泛证书不覆盖 tycoon.game.quanttide.com）
+#
+# 所需 GitHub secrets：
+#   - ALIYUN_ACCESS_KEY_ID / ALIYUN_ACCESS_KEY_SECRET（secret）：RAM 用户 AccessKey（OSS 上传 + CDN 刷新）
+
+name: Deploy Site
+
+on:
+  push:
+    tags:
+      - 'site/**'
+      - 'v*'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-qtgame-tycoon-site
+  cancel-in-progress: true
+
+env:
+  OSS_BUCKET: qtgame-tycoon-site
+  OSS_ENDPOINT: oss-cn-hangzhou.aliyuncs.com
+  CDN_DOMAIN: tycoon.game.quanttide.com
+
+jobs:
+  build-and-deploy:
+    name: Deploy Static Site to OSS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup ossutil
+        uses: manyuanrong/setup-ossutil@v3.0
+        with:
+          endpoint: ${{ env.OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+          access-key-secret: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+
+      # 入口页固定名，必须 no-cache，否则发版后浏览器/CDN 拿旧 HTML
+      - name: Upload index.html（no-cache）
+        run: |
+          ossutil cp src/index.html oss://${{ env.OSS_BUCKET }}/index.html -f --meta "Cache-Control:no-cache"
+
+      # 错误页兜底：OSS 静态托管 error_document 返回 404.html
+      - name: Upload 404.html（fallback）
+        run: |
+          cp src/index.html 404.html
+          ossutil cp 404.html oss://${{ env.OSS_BUCKET }}/404.html -f --meta "Cache-Control:no-cache"
+
+      - name: Refresh CDN
+        run: |
+          pip install aliyun-python-sdk-cdn
+          python -c "
+          from aliyunsdkcore.client import AcsClient
+          from aliyunsdkcdn.request.v20180510.RefreshObjectCachesRequest import RefreshObjectCachesRequest
+          import os
+          cli = AcsClient(os.environ['ALIYUN_ACCESS_KEY_ID'], os.environ['ALIYUN_ACCESS_KEY_SECRET'], 'cn-hangzhou')
+          req = RefreshObjectCachesRequest()
+          req.set_ObjectPath('https://${{ env.CDN_DOMAIN }}/')
+          req.set_ObjectType('Directory')
+          cli.do_action_with_exception(req)
+          "
+        env:
+          ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+          ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
