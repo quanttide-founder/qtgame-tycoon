@@ -1,4 +1,4 @@
-import type { UiProps } from './props';
+import type { UiProps } from '../props';
 
 interface ErrPoint { w: number; e: number }
 

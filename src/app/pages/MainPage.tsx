@@ -1,11 +1,11 @@
-import { GAPS, L } from '../engine/constants';
-import { money, progress } from '../engine/query';
-import BetPanel from './BetPanel';
-import type { UiProps } from './props';
-import ResultPanel from './ResultPanel';
-import Scene from './Scene';
-import Sheets from './Sheets';
-import Mentors from './Mentors';
+import { GAPS, L } from '../../engine/constants';
+import { money, progress } from '../../engine/query';
+import BetPanel from '../components/BetPanel';
+import type { UiProps } from '../props';
+import ResultPanel from '../components/ResultPanel';
+import Scene from '../components/Scene';
+import Sheets from '../components/Sheets';
+import Mentors from '../components/Mentors';
 
 export default function MainPage({ state, dispatch }: UiProps) {
   const g = state.game;

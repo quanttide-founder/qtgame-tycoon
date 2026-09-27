@@ -1,6 +1,6 @@
-import { money, unc } from '../engine/query';
+import { money, unc } from '../../engine/query';
 import type { ReactNode } from 'react';
-import type { UiProps } from './props';
+import type { UiProps } from '../props';
 
 export default function ResultPanel({ state, dispatch }: UiProps) {
   const g = state.game;

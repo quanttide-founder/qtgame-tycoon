@@ -1,5 +1,5 @@
-import { CAL_EVENTS } from '../engine/constants';
-import type { AppState } from '../engine/types';
+import { CAL_EVENTS } from '../../engine/constants';
+import type { AppState } from '../../engine/types';
 
 export default function Scene({ state }: { state: AppState }) {
   const g = state.game;

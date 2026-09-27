@@ -1,11 +1,11 @@
 import { useReducer } from 'react';
 import { initialAppState, reducer } from './engine/reducer';
-import EndingPage from './app/EndingPage';
-import MainPage from './app/MainPage';
-import Modal from './app/Modal';
-import OpeningPage from './app/OpeningPage';
-import RecapPage from './app/RecapPage';
-import WeeklyPage from './app/WeeklyPage';
+import EndingPage from './app/pages/EndingPage';
+import MainPage from './app/pages/MainPage';
+import Modal from './app/components/Modal';
+import OpeningPage from './app/pages/OpeningPage';
+import RecapPage from './app/pages/RecapPage';
+import WeeklyPage from './app/pages/WeeklyPage';
 
 export default function App() {
   const [state, dispatch] = useReducer(reducer, undefined, initialAppState);

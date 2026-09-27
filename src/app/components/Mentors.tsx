@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import { forecast } from '../engine/query';
-import type { AppState } from '../engine/types';
+import { forecast } from '../../engine/query';
+import type { AppState } from '../../engine/types';
 
 export default function Mentors({ state }: { state: AppState }) {
   const g = state.game;

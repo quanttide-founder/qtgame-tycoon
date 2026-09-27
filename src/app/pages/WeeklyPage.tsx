@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
-import { GAPS, L } from '../engine/constants';
-import { filledCount, money, unc, weekStats } from '../engine/query';
-import type { UiProps } from './props';
-import Row from './Row';
+import { GAPS, L } from '../../engine/constants';
+import { filledCount, money, unc, weekStats } from '../../engine/query';
+import type { UiProps } from '../props';
+import Row from '../components/Row';
 
 export default function WeeklyPage({ state, dispatch }: UiProps) {
   const g = state.game;

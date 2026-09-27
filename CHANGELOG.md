@@ -14,6 +14,7 @@
   - 逻辑集中在 `src/engine/`（不依赖 DOM，可在 Node 中加载做数值模拟）：`types` 契约、`constants` 数据表、`query` 只读派生、`mutate` 状态变更、`events` 事件池、`reducer` 流转；渲染在 `src/app/`
   - 分层边界由 ESLint `no-restricted-imports` 强制：`app/` 只许引用 `query/constants/types`，写操作一律 `dispatch → reducer`；`AppState` 分为 `ui` / `game` / `pending` 三段，克隆边界由 `reducer.commit()` 统一执行
   - 目录更名（纯路径迁移，内容与语义不变）：`src/game/` → `src/engine/`，`src/ui/` → `src/app/`
+  - `src/app/` 拆为两层（纯路径迁移，内容与语义不变）：五页入 `src/app/pages/`，复用组件与弹层入 `src/app/components/`，共享 props 契约留在 `src/app/props.ts`
   - 部署改为构建产物 `dist/`（assets 长缓存、入口 no-cache）；`file://` 直开不再支持，本地改用 `npm run dev`
 
 ### Fixed
@@ -26,10 +27,10 @@
 
 | 旧路径（src/index.html） | 新路径 |
 |--------------------------|--------|
-| HTML 结构（五页 + 弹层） | `index.html` + `src/app/*.tsx` |
+| HTML 结构（五页 + 弹层） | `index.html` + `src/app/pages/*.tsx` + `src/app/components/*.tsx` |
 | 内联 CSS | `src/styles.css`（逐字节迁移） |
 | 内联 JS（游戏逻辑） | `src/engine/*.ts`（types / constants / query / mutate / events / reducer） |
-| 内联 JS（渲染与交互） | `src/App.tsx` + `src/app/*.tsx` |
+| 内联 JS（渲染与交互） | `src/App.tsx` + `src/app/pages/*.tsx` + `src/app/components/*.tsx` |
 
 ## [0.0.1] - 2026-04-30
 

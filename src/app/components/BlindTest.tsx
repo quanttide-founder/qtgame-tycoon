@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { BLIND_CRIT, BLIND_NAMES, L } from '../engine/constants';
-import { canBet, money } from '../engine/query';
-import type { BlindScores } from '../engine/types';
-import type { UiProps } from './props';
+import { BLIND_CRIT, BLIND_NAMES, L } from '../../engine/constants';
+import { canBet, money } from '../../engine/query';
+import type { BlindScores } from '../../engine/types';
+import type { UiProps } from '../props';
 
 export default function BlindTest({ state, dispatch }: UiProps) {
   const [scores, setScores] = useState<BlindScores>({});

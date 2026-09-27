@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
-import { GAPS } from '../engine/constants';
-import { money, unc } from '../engine/query';
-import type { GameData } from '../engine/types';
+import { GAPS } from '../../engine/constants';
+import { money, unc } from '../../engine/query';
+import type { GameData } from '../../engine/types';
 import Row from './Row';
-import type { UiProps } from './props';
+import type { UiProps } from '../props';
 
 function ledgerBody(g: GameData): ReactNode {
   const net = g.cum.rev - g.cum.cost;

@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
-import { L } from '../engine/constants';
-import { money, probeOptions, skipOptions } from '../engine/query';
+import { L } from '../../engine/constants';
+import { money, probeOptions, skipOptions } from '../../engine/query';
 import BlindTest from './BlindTest';
-import type { UiProps } from './props';
+import type { UiProps } from '../props';
 
 export default function Modal({ state, dispatch }: UiProps) {
   const p = state.pending;
