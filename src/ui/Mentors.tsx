@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { forecast } from '../game/engine';
+import { forecast } from '../game/query';
 import type { AppState } from '../game/types';
 
 export default function Mentors({ state }: { state: AppState }) {

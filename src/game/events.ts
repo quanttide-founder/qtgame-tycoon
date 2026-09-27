@@ -1,5 +1,6 @@
 import { L } from './constants';
-import { log, mark, money } from './engine';
+import { log, mark } from './mutate';
+import { money } from './query';
 import type { GameData, GameEvent } from './types';
 
 export function rollEvent(g: GameData): GameEvent | null {

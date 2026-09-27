@@ -1,4 +1,4 @@
-import { money, unc } from '../game/engine';
+import { money, unc } from '../game/query';
 import type { ReactNode } from 'react';
 import type { UiProps } from './props';
 

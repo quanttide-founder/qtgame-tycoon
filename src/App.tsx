@@ -13,11 +13,11 @@ export default function App() {
   return (
     <>
       <div className="wrap">
-        {state.page === 'open' && <OpeningPage onStart={() => dispatch({ type: 'START' })} />}
-        {state.page === 'main' && <MainPage state={state} dispatch={dispatch} />}
-        {state.page === 'weekly' && <WeeklyPage state={state} dispatch={dispatch} />}
-        {state.page === 'ending' && <EndingPage state={state} dispatch={dispatch} />}
-        {state.page === 'recap' && <RecapPage state={state} dispatch={dispatch} />}
+        {state.ui.page === 'open' && <OpeningPage onStart={() => dispatch({ type: 'START' })} />}
+        {state.ui.page === 'main' && <MainPage state={state} dispatch={dispatch} />}
+        {state.ui.page === 'weekly' && <WeeklyPage state={state} dispatch={dispatch} />}
+        {state.ui.page === 'ending' && <EndingPage state={state} dispatch={dispatch} />}
+        {state.ui.page === 'recap' && <RecapPage state={state} dispatch={dispatch} />}
       </div>
       <Modal state={state} dispatch={dispatch} />
     </>

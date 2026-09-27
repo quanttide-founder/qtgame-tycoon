@@ -125,11 +125,40 @@ export type BlindScores = Record<string, Partial<Record<string, number>>>;
 
 export type PagePhase = 'open' | 'main' | 'weekly' | 'ending' | 'recap';
 
-export interface AppState {
+/** UI 态：小而不可变，流转时浅铺携带 */
+export interface UiState {
   page: PagePhase;
-  game: GameData;
-  pending: Pending | null;
+  sheet: 'ledger' | 'gaps' | null;
   /** 飘字：seq 用于强制重挂载，保证每次开奖动画重新播放 */
   float: { text: string; seq: number } | null;
-  sheet: 'ledger' | 'gaps' | null;
 }
+
+/**
+ * 三段结构即克隆边界：
+ * - game：唯一深拷贝单元，mutate 层原地改草稿后整只替换；
+ * - ui：不可变小对象，浅铺合并；
+ * - pending：含事件选项闭包，永不参与拷贝，按引用带过。
+ */
+export interface AppState {
+  ui: UiState;
+  game: GameData;
+  pending: Pending | null;
+}
+
+export type Action =
+  | { type: 'START' }
+  | { type: 'BET'; amount: number }
+  | { type: 'CHOOSE'; index: number }
+  | { type: 'RIVAL'; index: number }
+  | { type: 'SKIP' }
+  | { type: 'SKIP_PICK'; key: 'probe' | 'blind' }
+  | { type: 'PROBE'; key: GapKey }
+  | { type: 'BLIND_SUBMIT'; scores: BlindScores }
+  | { type: 'CLOSE_MODAL' }
+  | { type: 'NEXT_DAY' }
+  | { type: 'WEEK_NEXT' }
+  | { type: 'RECAP' }
+  | { type: 'SET_PRICE'; mult: number }
+  | { type: 'TOGGLE_SHEET'; sheet: 'ledger' | 'gaps' }
+  | { type: 'CLOSE_SHEET' }
+  | { type: 'NEW_GAME' };

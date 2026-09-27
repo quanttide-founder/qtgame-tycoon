@@ -49,8 +49,8 @@ export default function Scene({ state }: { state: AppState }) {
       </div>
       <div className="rival" id="sc-rival" style={{ display: g.day >= 15 ? 'block' : 'none' }} />
       <div className={rainCls} id="sc-rain" style={{ display: rainOn ? 'block' : 'none' }} />
-      {state.float && (
-        <div className="float go" key={state.float.seq}>{state.float.text}</div>
+      {state.ui.float && (
+        <div className="float go" key={state.ui.float.seq}>{state.ui.float.text}</div>
       )}
       <div className="note" id="sc-note">{note}</div>
     </div>

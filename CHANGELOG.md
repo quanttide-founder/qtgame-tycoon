@@ -11,7 +11,8 @@
 ### Changed
 
 - 按远端最新单文件版本（押注 / 开奖玩法）重写为 React 应用，玩法、数值与五页交互不变：
-  - 逻辑集中在 `src/game/`（纯逻辑，不依赖 DOM，可在 Node 中加载做数值模拟），渲染在 `src/ui/`
+  - 逻辑集中在 `src/game/`（不依赖 DOM，可在 Node 中加载做数值模拟）：`types` 契约、`constants` 数据表、`query` 只读派生、`mutate` 状态变更、`events` 事件池、`reducer` 流转；渲染在 `src/ui/`
+  - 分层边界由 ESLint `no-restricted-imports` 强制：`ui/` 只许引用 `query/constants/types`，写操作一律 `dispatch → reducer`；`AppState` 分为 `ui` / `game` / `pending` 三段，克隆边界由 `reducer.commit()` 统一执行
   - 部署改为构建产物 `dist/`（assets 长缓存、入口 no-cache）；`file://` 直开不再支持，本地改用 `npm run dev`
 
 ### Fixed
@@ -26,7 +27,7 @@
 |--------------------------|--------|
 | HTML 结构（五页 + 弹层） | `index.html` + `src/ui/*.tsx` |
 | 内联 CSS | `src/styles.css`（逐字节迁移） |
-| 内联 JS（游戏逻辑） | `src/game/*.ts`（常量 / 引擎 / 事件 / reducer） |
+| 内联 JS（游戏逻辑） | `src/game/*.ts`（types / constants / query / mutate / events / reducer） |
 | 内联 JS（渲染与交互） | `src/App.tsx` + `src/ui/*.tsx` |
 
 ## [0.0.1] - 2026-04-30

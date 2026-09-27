@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { GAPS } from '../game/constants';
-import { money, unc } from '../game/engine';
+import { money, unc } from '../game/query';
 import type { GameData } from '../game/types';
 import Row from './Row';
 import type { UiProps } from './props';
@@ -34,11 +34,11 @@ export default function Sheets({ state, dispatch }: UiProps) {
   const g = state.game;
   return (
     <>
-      <div className={'sheet' + (state.sheet === 'ledger' ? ' on' : '')} id="sh-ledger">
+      <div className={'sheet' + (state.ui.sheet === 'ledger' ? ' on' : '')} id="sh-ledger">
         <h3>账本 <button onClick={() => dispatch({ type: 'CLOSE_SHEET' })}>收起</button></h3>
         <div id="ld-body">{ledgerBody(g)}</div>
       </div>
-      <div className={'sheet' + (state.sheet === 'gaps' ? ' on' : '')} id="sh-gaps">
+      <div className={'sheet' + (state.ui.sheet === 'gaps' ? ' on' : '')} id="sh-gaps">
         <h3>缺口 <button onClick={() => dispatch({ type: 'CLOSE_SHEET' })}>收起</button></h3>
         <div id="gp-body">
           {GAPS.map((x) => {

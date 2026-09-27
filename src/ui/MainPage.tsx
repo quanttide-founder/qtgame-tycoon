@@ -1,5 +1,5 @@
 import { GAPS, L } from '../game/constants';
-import { money, progress } from '../game/engine';
+import { money, progress } from '../game/query';
 import BetPanel from './BetPanel';
 import type { UiProps } from './props';
 import ResultPanel from './ResultPanel';

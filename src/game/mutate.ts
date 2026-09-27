@@ -1,31 +1,30 @@
 import { BLIND_CRIT, BLIND_NAMES, CAL_EVENTS, GAPS, L } from './constants';
 import type { BlindScores, GameData, GapKey, Weather } from './types';
+import {
+  blindComplete, canBet, currentPrice, forecast, money, multCore,
+  oldMasterEstimate, unc, weekStats,
+} from './query';
 
-/* ── 展示格式 ── */
-export const fmt = (n: number) => Math.round(n).toLocaleString('zh-CN');
-export const money = (n: number) => '¥' + fmt(n);
+/**
+ * 状态变更层：所有写入 GameData 草稿的动词都在这里。
+ * 只允许 reducer.ts（流转）与 events.ts（事件副作用）调用；ui/ 被 ESLint 边界规则禁止引用。
+ */
 
-/* ── 基础计算 ── */
-export function multCore(g: GameData): number {
-  let m = g.gaps.price.filled ? 1.05 : 0.78;
-  if (g.gaps.crowd.filled) m *= 1.15;
-  if (g.gaps.broth.filled) m *= g.quality;
-  return m;
+export function rollWeather(): Weather {
+  const r = Math.random();
+  return r < 0.5 ? '晴' : r < 0.8 ? '阴' : r < 0.93 ? '小雨' : '暴雨';
 }
 
-export const forecast = (g: GameData) => ({ v: Math.round(L.target * multCore(g)), u: unc(g) });
-
-/** 老摊主：一个点估计，比军师偏差大，但有自己偏向 */
-export function oldMasterEstimate(g: GameData): number {
-  const f = forecast(g);
-  const bias = (Math.random() * 0.2 - 0.1);   // -10% ~ +10%
-  const cal = CAL_EVENTS[g.day];
-  let mod = 1;
-  if (cal && cal.indexOf('周末') >= 0) mod = 1.1;
-  if (cal && cal.indexOf('游客高峰') >= 0) mod = 1.15;
-  return Math.max(40, Math.round(f.v * (1 + bias) * mod));
+export function log(g: GameData, text: string, cls = '') {
+  g.logs.unshift({ day: g.day, text, cls });
+  if (g.logs.length > 40) g.logs.pop();
 }
+export const mark = (g: GameData, t: string) => { g.milestones.push(t); };
 
+/**
+ * 今晚的实际需求：会消耗一条待生效的客流修正（g.q.shift()），
+ * 因此有状态副作用，归变更层而非查询层。
+ */
 export function actualDemand(g: GameData): number {
   const f = forecast(g);
   const half = f.u / 100;
@@ -49,33 +48,6 @@ export function actualDemand(g: GameData): number {
   if (!g.gaps.price.filled) d *= (0.92 + Math.random() * 0.16);
   return Math.max(10, Math.round(d));
 }
-
-export const currentPrice = (g: GameData) => L.priceBase * g.priceMultiplier;
-
-export function progress(g: GameData) {
-  const stalls = g.records.filter((r) => r.act === '押注');
-  const total = stalls.reduce((a, r) => a + r.sold, 0);
-  return { played: stalls.length, total, avg: stalls.length ? total / stalls.length : 0 };
-}
-
-export const filledCount = (g: GameData) => GAPS.filter((x) => g.gaps[x.key].filled).length;
-export const manualFilled = (g: GameData) =>
-  GAPS.filter((x) => x.src !== '自动' && g.gaps[x.key].filled).length;
-export const unc = (g: GameData) => [40, 30, 20, 12, 8][manualFilled(g)];
-
-export function rollWeather(): Weather {
-  const r = Math.random();
-  return r < 0.5 ? '晴' : r < 0.8 ? '阴' : r < 0.93 ? '小雨' : '暴雨';
-}
-
-export const canBet = (g: GameData) => g.phase === 'bet' && !g.finished;
-
-/* ── 状态变更原语 ── */
-export function log(g: GameData, text: string, cls = '') {
-  g.logs.unshift({ day: g.day, text, cls });
-  if (g.logs.length > 40) g.logs.pop();
-}
-export const mark = (g: GameData, t: string) => { g.milestones.push(t); };
 
 export function createGame(): GameData {
   const g: GameData = {
@@ -173,17 +145,6 @@ export function resolveBet(g: GameData, amount: number, mult: number | null): st
   return '+' + sold + '签';
 }
 
-/* ── 今天不押（探店 / 盲测入口） ── */
-export const probeOptions = (g: GameData) =>
-  GAPS.filter((x) => x.src === '探店' && !g.gaps[x.key].filled);
-
-export function skipOptions(g: GameData): ('probe' | 'blind')[] {
-  const opts: ('probe' | 'blind')[] = [];
-  if (probeOptions(g).length) opts.push('probe');
-  if (!g.gaps.broth.filled) opts.push('blind');
-  return opts;
-}
-
 export function applyProbe(g: GameData, key: GapKey): string | null {
   if (!canBet(g)) return null;
   const def = GAPS.find((x) => x.key === key);
@@ -209,10 +170,6 @@ export function applyProbe(g: GameData, key: GapKey): string | null {
   mark(g, '第' + g.day + '天 你去探了店');
   return '实测到手';
 }
-
-/* ── 盲测 ── */
-export const blindComplete = (scores: BlindScores) =>
-  BLIND_NAMES.every((n) => BLIND_CRIT.every((c) => scores[n]?.[c]));
 
 export function applyBlind(g: GameData, scores: BlindScores): string | null {
   if (!blindComplete(scores)) return null;
@@ -251,24 +208,6 @@ export function advanceDay(g: GameData) {
   g.oldGuess = oldMasterEstimate(g);
   const w = Math.ceil(g.day / 7);
   if (g.fc[w - 1] == null) g.fc[w - 1] = { v: Math.round(L.target * multCore(g)), u: unc(g) };
-}
-
-export function weekStats(g: GameData, w: number) {
-  const from = (w - 1) * 7 + 1, to = w * 7;
-  const rs = g.records.filter((r) => r.day >= from && r.day <= to);
-  const stalls = rs.filter((r) => r.act === '押注' && r.bet > 0);
-  const soldSum = stalls.reduce((a, r) => a + r.sold, 0);
-  const betSum = stalls.reduce((a, r) => a + r.bet, 0);
-  const demandSum = stalls.reduce((a, r) => a + r.demand, 0);
-  const acc = stalls.length && demandSum > 0
-    ? Math.max(0, 1 - Math.abs(betSum - demandSum) / demandSum)
-    : null;
-  return {
-    n: stalls.length,
-    avg: stalls.length ? soldSum / stalls.length : null,
-    acc,
-    shortages: g.weekShortages,
-  };
 }
 
 /** 进入周结算页时的落账：利息、误差记录、首周缺口回填 */

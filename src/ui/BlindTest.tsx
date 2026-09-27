@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { BLIND_CRIT, BLIND_NAMES, L } from '../game/constants';
-import { canBet, money } from '../game/engine';
+import { canBet, money } from '../game/query';
 import type { BlindScores } from '../game/types';
 import type { UiProps } from './props';
 
