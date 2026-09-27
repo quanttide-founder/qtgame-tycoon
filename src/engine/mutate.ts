@@ -7,7 +7,7 @@ import {
 
 /**
  * 状态变更层：所有写入 GameData 草稿的动词都在这里。
- * 只允许 reducer.ts（流转）与 events.ts（事件副作用）调用；ui/ 被 ESLint 边界规则禁止引用。
+ * 只允许 reducer.ts（流转）与 events.ts（事件副作用）调用；app/ 被 ESLint 边界规则禁止引用。
  */
 
 export function rollWeather(): Weather {

@@ -28,8 +28,8 @@ src/
   main.tsx       # React 挂载入口
   App.tsx        # 五页状态机与押注/开奖流转
   styles.css     # 全局样式（原单文件 CSS 逐字节迁移）
-  game/          # 纯游戏逻辑：types 契约 / constants 数据表 / query 只读查询 / mutate 状态变更 / events 事件 / reducer 流转，不依赖 DOM，可在 Node 中加载做数值模拟
-  ui/            # 页面与弹层组件
+  engine/        # 纯游戏逻辑：types 契约 / constants 数据表 / query 只读查询 / mutate 状态变更 / events 事件 / reducer 流转，不依赖 DOM，可在 Node 中加载做数值模拟
+  app/           # 页面与弹层组件
 docs/            # 开发文档（玩法、页面设计）
 .github/         # CI/CD
 ```

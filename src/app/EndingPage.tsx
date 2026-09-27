@@ -1,5 +1,5 @@
-import { GAPS, L } from '../game/constants';
-import { filledCount, money, progress } from '../game/query';
+import { GAPS, L } from '../engine/constants';
+import { filledCount, money, progress } from '../engine/query';
 import type { UiProps } from './props';
 
 export default function EndingPage({ state, dispatch }: UiProps) {

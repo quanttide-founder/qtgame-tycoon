@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import { GAPS, L } from '../game/constants';
-import { filledCount, money, unc, weekStats } from '../game/query';
+import { GAPS, L } from '../engine/constants';
+import { filledCount, money, unc, weekStats } from '../engine/query';
 import type { UiProps } from './props';
 import Row from './Row';
 

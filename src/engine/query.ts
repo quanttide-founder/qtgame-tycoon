@@ -3,7 +3,7 @@ import type { BlindScores, GameData } from './types';
 
 /**
  * 只读派生层：全部是 (g) => 值 的纯查询，不修改任何状态。
- * ui/ 允许直接引用本层；写操作一律在 mutate.ts，经 reducer 流转。
+ * app/ 允许直接引用本层；写操作一律在 mutate.ts，经 reducer 流转。
  */
 
 /* ── 展示格式 ── */

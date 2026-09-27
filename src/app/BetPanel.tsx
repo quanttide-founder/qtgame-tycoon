@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import type { ReactNode } from 'react';
-import { BET_TIERS, CAL_EVENTS, GAPS, L } from '../game/constants';
-import { filledCount, forecast, money } from '../game/query';
+import { BET_TIERS, CAL_EVENTS, GAPS, L } from '../engine/constants';
+import { filledCount, forecast, money } from '../engine/query';
 import type { UiProps } from './props';
 
 export default function BetPanel({ state, dispatch }: UiProps) {

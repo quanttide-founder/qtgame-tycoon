@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import { L } from '../game/constants';
-import { money, probeOptions, skipOptions } from '../game/query';
+import { L } from '../engine/constants';
+import { money, probeOptions, skipOptions } from '../engine/query';
 import BlindTest from './BlindTest';
 import type { UiProps } from './props';
 
