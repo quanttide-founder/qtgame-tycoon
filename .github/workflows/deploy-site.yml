@@ -1,12 +1,13 @@
-# 发布站点：向 main 分支提交时，把 src/ 静态文件上传到 OSS 发布桶
+# 发布站点：向 main 分支提交时，构建 Vite 产物并上传到 OSS 发布桶
 #（qtgame-tycoon-site，静态网站托管），并刷新 CDN 缓存。不接受手动触发。
 #
 # 部署链路（对齐 qtfounder 的 deploy-site.yml 模式）：
-#   main 提交 → Actions（ossutil cp）→ OSS 桶（qtgame-tycoon-site）
+#   main 提交 → Actions（npm ci + build，ossutil cp）→ OSS 桶（qtgame-tycoon-site）
 #   → CDN（tycoon.game.quanttide.com）→ 用户浏览器
 #
-# 与 qtfounder 的差异：本站是单文件纯静态页（src/index.html），无 npm 构建步骤；
-# 当前没有哈希资源目录，入口固定 no-cache 即可。后续新增 assets/ 时再补长缓存步骤。
+# 构建说明：React + Vite 单页应用，产物 dist/ 为 index.html + 哈希 assets/；
+# 缓存策略：哈希资源长缓存，固定名入口（index.html / 404.html）必须 no-cache，
+# 否则发版后浏览器/CDN 拿旧 HTML（引用旧 hash）。
 #
 # 前置条件（均已在 CI 之外用 aliyun CLI 配置完成，模式见 quanttide-platform 的
 # static-site / cdn-auth 模块）：
@@ -39,11 +40,21 @@ env:
 
 jobs:
   build-and-deploy:
-    name: Deploy Static Site to OSS
+    name: Build & Deploy Static Site to OSS
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install & Build
+        run: |
+          npm ci
+          npm run build
 
       - name: Setup ossutil
         uses: manyuanrong/setup-ossutil@v3.0
@@ -52,15 +63,21 @@ jobs:
           access-key-id: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
           access-key-secret: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
 
+      # 哈希资源（assets/）文件名含内容指纹，可永久缓存
+      - name: Upload assets（长缓存）
+        run: |
+          ossutil cp dist/assets/ oss://${{ env.OSS_BUCKET }}/assets/ -r -f \
+            --meta "Cache-Control:public,max-age=31536000"
+
       # 入口页固定名，必须 no-cache，否则发版后浏览器/CDN 拿旧 HTML
       - name: Upload index.html（no-cache）
         run: |
-          ossutil cp src/index.html oss://${{ env.OSS_BUCKET }}/index.html -f --meta "Cache-Control:no-cache"
+          ossutil cp dist/index.html oss://${{ env.OSS_BUCKET }}/index.html -f --meta "Cache-Control:no-cache"
 
       # 错误页兜底：OSS 静态托管 error_document 返回 404.html
       - name: Upload 404.html（fallback）
         run: |
-          cp src/index.html 404.html
+          cp dist/index.html 404.html
           ossutil cp 404.html oss://${{ env.OSS_BUCKET }}/404.html -f --meta "Cache-Control:no-cache"
 
       - name: Refresh CDN
